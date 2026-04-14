@@ -1,22 +1,23 @@
 {
-  "title": "本地异动追踪深度分析",
+  "title": "本地异动追踪深度分析(价格更新版)",
   "date": "2026-04-14",
   "source": "local",
   "totalFlow": "$1.27B",
   "tickers": ["TSLA", "NVDA", "GOOGL", "META", "QQQ", "RKLB", "ONDS"],
-  "macro": "科技连涨10天创2021来最长，Nasdaq+1.96%，但QQQ出现54:112极端看跌信号；NVDA/GOOGL看涨最强，QQQ Put Spread对冲尾部风险",
+  "macro": "基于最新收盘价更新：NVDA+3.2%/GOOGL+2.3%/META+3.1%看涨全面兑现，行权价需上调。QQQ 54:112极端偏空+$625P全面ITM仍是隐患，追涨需配QQQ Put对冲",
   "strategies": [
-    { "sym": "NVDA", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread $192.5C/$200C 04/24", "target": "+50%", "risk": "$520/张" },
-    { "sym": "GOOGL", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread $325C/$340C 04/24", "target": "+80%", "risk": "$850/张" },
-    { "sym": "QQQ", "signal": "bearish", "conf": 7, "strategy": "Bear Put Spread $618P/$608P 04/24 (对冲)", "target": "+120%", "risk": "$450/张" },
-    { "sym": "TSLA", "signal": "neutral", "conf": 6, "strategy": "Iron Condor $345P-$375C 04/24 (财报前)", "target": "+50%", "risk": "$500-700/张" },
-    { "sym": "META", "signal": "bullish", "conf": 6, "strategy": "Bull Call Spread $640C/$660C 04/24", "target": "+70%", "risk": "$1200/张" },
-    { "sym": "RKLB", "signal": "bullish", "conf": 5, "strategy": "Long $75C 05/15", "target": "+80%", "risk": "$450/张" },
+    { "sym": "NVDA", "signal": "bullish", "conf": 9, "strategy": "Bull Call Spread $197.5C/$205C 04/24", "target": "+70%", "risk": "$450/张" },
+    { "sym": "GOOGL", "signal": "bullish", "conf": 9, "strategy": "Bull Call Spread $335C/$345C 04/24", "target": "+80%", "risk": "$550/张" },
+    { "sym": "TSLA", "signal": "bearish", "conf": 7, "strategy": "Bear Call Spread $370C/$380C 04/24 (对冲)", "target": "保留70%权利金", "risk": "$550-$650/张" },
+    { "sym": "TSLA", "signal": "bullish", "conf": 6, "strategy": "Bull Put Spread $355P/$345P 04/24", "target": "保留全部权利金", "risk": "$600-$700/张" },
+    { "sym": "META", "signal": "bullish", "conf": 7, "strategy": "Bull Call Spread $665C/$680C 04/24", "target": "+70%", "risk": "$900/张" },
+    { "sym": "QQQ", "signal": "bearish", "conf": 7, "strategy": "Bear Put Spread $618P/$608P 04/24 (对冲)", "target": "+150%", "risk": "$400/张" },
+    { "sym": "RKLB", "signal": "bullish", "conf": 5, "strategy": "Long $75C 05/15", "target": "+80%", "risk": "$400/张" },
     { "sym": "ONDS", "signal": "neutral", "conf": 3, "strategy": "信号不足，不建议参与", "target": "N/A", "risk": "N/A" }
   ],
   "top3": [
-    { "rank": 1, "sym": "NVDA", "strategy": "Bull Call Spread $192.5C/$200C 04/24 (5笔A级+$95M密集Call+IVR极低)", "conf": 8 },
-    { "rank": 2, "sym": "GOOGL", "strategy": "Bull Call Spread $325C/$340C 04/24 (Citi催化+4/29财报+最强多空比)", "conf": 8 },
-    { "rank": 3, "sym": "QQQ", "strategy": "Bear Put Spread $618P/$608P 04/24 (54:112极端偏空+连涨10天过热对冲)", "conf": 7 }
+    { "rank": 1, "sym": "NVDA", "strategy": "Bull Call Spread $197.5C/$205C 04/24 ($195已破!5笔A级全部盈利+动能最强)", "conf": 9 },
+    { "rank": 2, "sym": "GOOGL", "strategy": "Bull Call Spread $335C/$345C 04/24 ($330已破!+Citi PT$405+4/29财报)", "conf": 9 },
+    { "rank": 3, "sym": "QQQ", "strategy": "Bear Put Spread $618P/$608P 04/24 (54:112偏空+$625P ITM+必须对冲)", "conf": 7 }
   ]
 }
