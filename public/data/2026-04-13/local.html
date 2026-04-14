@@ -1,65 +1,635 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>本地异动追踪 - 2026-04-13</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>期权异动深度分析 | 2026-04-13</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'SF Pro Display','Noto Sans SC',-apple-system,sans-serif;background:#0f1419;color:#e8edf3;padding:16px 12px;min-height:100vh}
-h1{font-size:22px;font-weight:800;margin-bottom:4px}
-.subtitle{font-size:12px;color:#8899aa;margin-bottom:16px}
-.tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700;display:inline-block;margin-bottom:8px}
-.card{background:#1a2332;border:1px solid #2a3a4e;border-radius:12px;padding:16px;margin-bottom:14px}
-.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
-.sym{font-size:22px;font-weight:800}
-.signal{font-size:14px;padding:2px 10px;border-radius:20px;font-weight:700}
-table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0}
-th{padding:4px 8px;color:#8899aa;font-weight:600;text-align:left;border-bottom:1px solid #2a3a4e}
-td{padding:4px 8px;border-bottom:1px solid #2a3a4e20}
-.green{color:#00d26a}.red{color:#ff4757}.yellow{color:#ffc048}.blue{color:#4da6ff}.purple{color:#a78bfa}.muted{color:#8899aa}
-.macro{background:#1a2332;border:1px solid #2a3a4e;border-radius:12px;padding:16px;margin-bottom:16px}
-.conclusion{padding:10px 14px;background:#0a3d2a;border:1px solid #00d26a40;border-radius:8px;margin-top:10px}
-.strat-box{background:#0d2137;border:2px solid #1a4060;border-radius:12px;padding:16px;margin-bottom:16px}
-.footer{text-align:center;padding:16px 0 8px;font-size:10px;color:#8899aa}
+:root {
+  --bg-primary: #0a0e17;
+  --bg-secondary: #111827;
+  --bg-card: #1a2236;
+  --bg-card-hover: #1e2a42;
+  --border: #2a3654;
+  --text-primary: #e8edf5;
+  --text-secondary: #8b95a8;
+  --text-muted: #5a6478;
+  --accent-green: #00e676;
+  --accent-green-dim: #00e67633;
+  --accent-red: #ff5252;
+  --accent-red-dim: #ff525233;
+  --accent-yellow: #ffd740;
+  --accent-yellow-dim: #ffd74033;
+  --accent-blue: #448aff;
+  --accent-blue-dim: #448aff33;
+  --accent-orange: #ff9100;
+  --accent-purple: #b388ff;
+  --accent-cyan: #18ffff;
+  --gradient-bull: linear-gradient(135deg, #00e676, #00c853);
+  --gradient-bear: linear-gradient(135deg, #ff5252, #d50000);
+  --gradient-neutral: linear-gradient(135deg, #448aff, #2962ff);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Noto Sans SC', sans-serif;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+.noise-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 24px 20px 80px; position: relative; z-index: 1; }
+.header { text-align: center; padding: 48px 0 40px; position: relative; }
+.header::before {
+  content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(68,138,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.header-tag {
+  display: inline-block; padding: 4px 16px; border: 1px solid var(--accent-blue);
+  border-radius: 20px; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: 2px; color: var(--accent-blue); text-transform: uppercase;
+  margin-bottom: 16px; animation: fadeIn 0.8s ease;
+}
+.header h1 {
+  font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 56px);
+  font-weight: 900; letter-spacing: -1px;
+  background: linear-gradient(135deg, #e8edf5 30%, #448aff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 8px; animation: fadeIn 1s ease;
+}
+.header .date { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text-muted); animation: fadeIn 1.2s ease; }
+.header .market-context {
+  margin-top: 16px; padding: 12px 24px; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 12px; display: inline-block;
+  font-size: 13px; color: var(--text-secondary); animation: fadeIn 1.4s ease;
+}
+.header .market-context strong { color: var(--accent-cyan); }
+.section-title { display: flex; align-items: center; gap: 12px; margin: 48px 0 24px; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+.section-title .icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.section-title .line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+.overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; position: relative; overflow: hidden; transition: all 0.3s ease; }
+.stat-card:hover { border-color: var(--accent-blue); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(68,138,255,0.1); }
+.stat-card .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.stat-card .value { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; }
+.stat-card .sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+.stat-card .accent-line { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.ticker-section { margin-bottom: 32px; }
+.ticker-header { display: flex; align-items: center; gap: 16px; padding: 20px 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px 16px 0 0; cursor: pointer; transition: all 0.3s ease; }
+.ticker-header:hover { background: var(--bg-card-hover); }
+.ticker-symbol { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; min-width: 80px; }
+.ticker-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; }
+.badge-bull { background: var(--accent-green-dim); color: var(--accent-green); }
+.badge-bear { background: var(--accent-red-dim); color: var(--accent-red); }
+.badge-neutral { background: var(--accent-blue-dim); color: var(--accent-blue); }
+.badge-mild-bull { background: var(--accent-yellow-dim); color: var(--accent-yellow); }
+.badge-mild-bear { background: rgba(255,145,0,0.15); color: var(--accent-orange); }
+.ticker-meta { margin-left: auto; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-secondary); }
+.ticker-body { background: var(--bg-secondary); border: 1px solid var(--border); border-top: none; border-radius: 0 0 16px 16px; padding: 24px; }
+.analysis-block { margin-bottom: 24px; }
+.analysis-block:last-child { margin-bottom: 0; }
+.analysis-block h4 { font-size: 14px; font-weight: 600; color: var(--accent-blue); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.analysis-block p { font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
+.analysis-block p strong { color: var(--text-primary); }
+.key-levels { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+.level-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12px; border: 1px solid var(--border); background: var(--bg-card); }
+.level-chip.resistance { border-color: var(--accent-red); color: var(--accent-red); }
+.level-chip.support { border-color: var(--accent-green); color: var(--accent-green); }
+.level-chip.maxpain { border-color: var(--accent-yellow); color: var(--accent-yellow); }
+.confidence { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+.confidence-bar { display: flex; gap: 2px; }
+.confidence-dot { width: 8px; height: 8px; border-radius: 2px; background: var(--border); }
+.confidence-dot.active { background: var(--accent-blue); }
+.confidence-dot.active.high { background: var(--accent-green); }
+.strategy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.strategy-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; position: relative; }
+.strategy-card .tag { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.strategy-card .tag.follow { color: var(--accent-green); }
+.strategy-card .tag.hedge { color: var(--accent-blue); }
+.strategy-card .tag.danger { color: var(--accent-red); }
+.strategy-card .tag.watch { color: var(--accent-yellow); }
+.strategy-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.strategy-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+.strategy-card .entry { margin-top: 12px; padding: 10px 14px; background: var(--bg-secondary); border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-secondary); }
+.strategy-card .entry strong { color: var(--text-primary); }
+.flow-bar-container { margin: 16px 0; }
+.flow-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--bg-card); }
+.flow-bar .bull { background: var(--gradient-bull); }
+.flow-bar .bear { background: var(--gradient-bear); }
+.flow-labels { display: flex; justify-content: space-between; font-size: 12px; margin-top: 6px; }
+.flow-labels .bull-label { color: var(--accent-green); }
+.flow-labels .bear-label { color: var(--accent-red); }
+.risk-box { background: rgba(255,82,82,0.06); border: 1px solid rgba(255,82,82,0.2); border-radius: 14px; padding: 20px 24px; margin: 16px 0; }
+.risk-box h4 { color: var(--accent-red); font-size: 15px; margin-bottom: 8px; }
+.risk-box p { font-size: 13px; color: var(--text-secondary); line-height: 1.8; }
+.summary-box { background: linear-gradient(135deg, rgba(68,138,255,0.08), rgba(179,136,255,0.06)); border: 1px solid rgba(68,138,255,0.25); border-radius: 16px; padding: 28px; margin: 32px 0; }
+.summary-box h3 { font-size: 20px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.summary-box p { font-size: 14px; color: var(--text-secondary); line-height: 1.9; }
+.summary-box p strong { color: var(--text-primary); }
+.disclaimer { margin-top: 48px; padding: 16px 20px; background: var(--bg-card); border-radius: 12px; font-size: 11px; color: var(--text-muted); text-align: center; line-height: 1.6; }
+.watchlist { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
+.watchlist th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); padding: 8px 14px; }
+.watchlist td { padding: 12px 14px; font-size: 13px; background: var(--bg-card); color: var(--text-secondary); }
+.watchlist td:first-child { border-radius: 10px 0 0 10px; }
+.watchlist td:last-child { border-radius: 0 10px 10px 0; }
+.watchlist .mono { font-family: 'JetBrains Mono', monospace; color: var(--text-primary); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.6s ease forwards; }
+@media (max-width: 768px) {
+  .container { padding: 16px 12px 60px; }
+  .ticker-header { flex-wrap: wrap; gap: 8px; }
+  .ticker-meta { margin-left: 0; text-align: left; }
+  .strategy-grid { grid-template-columns: 1fr; }
+  .overview-grid { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 </head>
 <body>
-<div style="margin-bottom:16px;border-bottom:1px solid #2a3a4e;padding-bottom:16px">
-<span class="tag" style="background:#4da6ff22;color:#4da6ff">本地异动追踪</span>
-<span style="font-size:10px;color:#8899aa;margin-left:8px">2026-04-13</span>
-<h1>期权异动分析仪表盘</h1>
-<p class="subtitle">占位示例数据 · 实际使用时替换为AI生成的完整分析</p>
+<div class="noise-overlay"></div>
+<div class="container">
+
+<div class="header">
+  <div class="header-tag">Smart Money Flow Analysis</div>
+  <h1>期权异动深度分析</h1>
+  <div class="date">2026-04-13 Monday | Options Unusual Activity Report</div>
+  <div class="market-context">
+    市场背景: S&P 500 <strong>+1.02%</strong> 收 6,886 | Nasdaq <strong>+1.23%</strong> | 美伊谈判破裂→霍尔木兹海峡封锁 | 油价 WTI $104 | 科技股反弹领涨 | <strong>TSLA财报 4/22</strong>
+  </div>
 </div>
 
-<div class="macro">
-<h2 style="font-size:14px;font-weight:700;color:#4da6ff;margin-bottom:10px">宏观背景</h2>
-<p style="font-size:12px;line-height:1.7">这是 2026-04-13 的 本地异动追踪 占位页面。实际使用时，这里会展示完整的AI生成分析内容，包括宏观数据、标的异动卡片、交易策略表和总结。</p>
-<div class="conclusion">
-<span style="font-size:12px;font-weight:700;color:#00d26a">🎯 核心结论：</span>
-<span style="font-size:12px">占位内容 - 将由AI分析替换</span>
-</div>
+<div class="section-title">
+  <div class="icon" style="background:var(--accent-blue-dim)">📊</div>
+  <span>今日全景</span>
+  <div class="line"></div>
 </div>
 
-<div class="card" style="border-left:4px solid #00d26a">
-<div class="card-header">
-<div style="display:flex;align-items:center;gap:10px">
-<span class="sym">SAMPLE</span>
-<span class="signal" style="background:#00d26a22;color:#00d26a">🟢 示例看涨</span>
+<div class="overview-grid">
+  <div class="stat-card">
+    <div class="accent-line" style="background: var(--gradient-neutral)"></div>
+    <div class="label">有效异动</div>
+    <div class="value">304</div>
+    <div class="sub">sweep 162 | spike 114 | large 28</div>
+  </div>
+  <div class="stat-card">
+    <div class="accent-line" style="background: linear-gradient(90deg, var(--accent-green), var(--accent-blue))"></div>
+    <div class="label">总成交金额</div>
+    <div class="value" style="font-size:22px">$427.3M</div>
+    <div class="sub">Smart Money A级: 18笔</div>
+  </div>
+  <div class="stat-card">
+    <div class="accent-line" style="background: var(--gradient-bull)"></div>
+    <div class="label">多空比</div>
+    <div class="value" style="color:var(--accent-green)">158<span style="color:var(--text-muted);font-size:16px"> vs </span><span style="color:var(--accent-red)">139</span></div>
+    <div class="sub">略偏多，但非一致性信号</div>
+  </div>
+  <div class="stat-card">
+    <div class="accent-line" style="background: linear-gradient(90deg, var(--accent-yellow), var(--accent-orange))"></div>
+    <div class="label">关键催化剂</div>
+    <div class="value" style="font-size:16px;line-height:1.4">地缘 + 财报周</div>
+    <div class="sub">TSLA 4/22 | 银行股本周密集</div>
+  </div>
 </div>
-<span class="muted" style="font-size:12px">置信度 8/10</span>
+
+<div class="flow-bar-container">
+  <div class="flow-bar">
+    <div class="bull" style="width:53.2%"></div>
+    <div class="bear" style="width:46.8%"></div>
+  </div>
+  <div class="flow-labels">
+    <span class="bull-label">看涨 158笔 (53.2%)</span>
+    <span class="bear-label">看跌 139笔 (46.8%)</span>
+  </div>
 </div>
-<table>
-<tr><th>合约</th><th>到期</th><th>方向</th><th>金额</th><th>V/OI</th></tr>
-<tr><td style="font-weight:700">335C</td><td class="muted">5/15</td><td class="green" style="font-weight:600">🟢看多</td><td style="font-weight:700">$20.66M</td><td class="yellow" style="font-weight:700">9.78</td></tr>
-<tr><td style="font-weight:700">340C</td><td class="muted">6/18</td><td class="yellow" style="font-weight:600">🟡混合</td><td style="font-weight:700">$20.92M</td><td class="muted">0.92</td></tr>
+
+<div class="summary-box">
+  <h3>AI 综合研判</h3>
+  <p>
+    今日期权市场呈现<strong>「多空胶着、方向分歧」</strong>的典型特征。表面上看涨略占优(53% vs 47%)，但分析细节后发现：<strong>QQQ的巨量Call卖出(#1 $31.3M)与巨量Call买入(#3 $14.8M)同时出现</strong>，说明机构间对短期方向存在严重分歧。
+  </p>
+  <p style="margin-top:12px">
+    市场背景极为关键：美伊谈判破裂导致早盘大幅低开，但随后V型反转收涨1%+。<strong>这种盘中剧烈波动正是期权异动密集的土壤</strong>。TSLA财报在4/22，距今仅9天——大量TSLA期权集中在4/15和4/17到期，说明<strong>聪明钱正在为财报前的波动布局</strong>，而非直接押注财报方向。
+  </p>
+  <p style="margin-top:12px">
+    核心结论：科技板块仍是资金主战场($264M，占总额62%)，<strong>NVDA在低IVR下的大规模Call买入($42M+)是今日最强方向性信号</strong>。META看涨共识度最高。TSLA多空力量最均衡，需等财报确认。
+  </p>
+</div>
+
+<div class="section-title">
+  <div class="icon" style="background:rgba(255,215,64,0.15)">🔍</div>
+  <span>A. Top 5 单笔深度分析</span>
+  <div class="line"></div>
+</div>
+
+<!-- #1 QQQ -->
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol">QQQ</span>
+    <span class="ticker-badge badge-neutral">中性偏空</span>
+    <span style="font-size:13px;color:var(--text-secondary)">#1 | $613C 0DTE | <strong style="color:var(--accent-red)">卖出 $31.3M</strong></span>
+    <div class="ticker-meta">SM: A级 | IVR: 20%</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <h4>动机推演</h4>
+      <p><strong>61,340张Call在bid端卖出，DTE仅1天，SM评分A级——这是一笔高确信的Theta收割单。</strong>交易者认为QQQ明日到期时不会突破$618.10(BEP)，在盘中反弹至$611附近时大规模卖出短期Call收取时间价值。IVR仅20%说明波动率并未过度膨胀，卖出方愿意在低IV环境下收租，暗示其对上行空间极为悲观。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>策略识别</h4>
+      <p>最可能是<strong>备兑卖Call(Covered Call)或裸卖Call</strong>。考虑到SM%=70且金额巨大，大概率是持有QQQ现货/期货的机构做备兑。也可能是Iron Condor策略的Call腿，配合#17(QQQ $610P卖出)形成宽跨式卖出。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>催化剂</h4>
+      <p>美伊谈判破裂→早盘大跌→V型反弹。<strong>交易者判断反弹力度有限</strong>，在反弹高点附近卖Call。银行财报周(GS已报、JPM/WFC明日)增加不确定性。油价$104对科技股估值构成持续压力。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>BEP可行性</h4>
+      <p>BEP $618.10，相当于需要从当前$611涨1.2%。0DTE环境下，考虑到今日已反弹1%+且盘后无重大催化剂，<strong>卖方获利概率约65-70%</strong>，属于合理的短期Theta交易。</p>
+    </div>
+    <div class="confidence">置信度:
+      <div class="confidence-bar"><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot"></div><div class="confidence-dot"></div><div class="confidence-dot"></div><div class="confidence-dot"></div></div> 6/10
+    </div>
+  </div>
+</div>
+
+<!-- #2 TSLA Put -->
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol">TSLA</span>
+    <span class="ticker-badge badge-bear">温和看跌</span>
+    <span style="font-size:13px;color:var(--text-secondary)">#2 | $360P | <strong style="color:var(--accent-red)">买Put $15.5M</strong></span>
+    <div class="ticker-meta">SM: C级 | IVR: 34%</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <h4>动机推演</h4>
+      <p><strong>8,579张$360 Put在ask端买入，DTE=11天，恰好覆盖4/22 TSLA财报。</strong>这是一笔典型的<strong>财报前看跌布局</strong>。$360行权价OTM仅1.6%(TSLA收$347)，BEP在$342，需要下跌约3.6%才能获利。SM评分C级说明不是顶级机构，但$15.5M的金额足以说明是专业交易者。IVR 34%说明IV还未被完全推高，买方在成本可控时建仓。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>策略识别</h4>
+      <p><strong>方向性看跌押注，大概率是单腿Put或Bear Put Spread的长腿。</strong>结合#5($350C卖出 $12.8M)和#7($360C卖出 $9.1M)，整个TSLA市场呈现出机构在$350-360区域大规模卖Call + 买Put的格局，形成一个<strong>「上有顶、下可探」</strong>的共识。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>催化剂</h4>
+      <p><strong>TSLA 4/22财报是核心催化剂。</strong>Q1交付量数据此前已显示疲软，叠加欧洲市场反Musk情绪、油价飙升对EV需求的复杂影响，以及Optimus机器人预期管理。市场共识EPS $0.33远低于去年同期$0.50。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>BEP可行性</h4>
+      <p>BEP $342，距当前价约-1.6%。若财报不及预期，TSLA单日波动5-8%很常见，<strong>BEP完全在射程范围内</strong>。风险在于若财报超预期或Musk放出Robotaxi利好，可能直接GapUp 10%+导致全损。</p>
+    </div>
+    <div class="confidence">置信度:
+      <div class="confidence-bar"><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot"></div><div class="confidence-dot"></div><div class="confidence-dot"></div></div> 7/10
+    </div>
+  </div>
+</div>
+
+<!-- #3 QQQ Call Buy -->
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol">QQQ</span>
+    <span class="ticker-badge badge-mild-bull">温和看涨</span>
+    <span style="font-size:13px;color:var(--text-secondary)">#3 | $612C 0DTE | <strong style="color:var(--accent-green)">买入 $14.8M</strong></span>
+    <div class="ticker-meta">SM: B级 | IVR: 27%</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <h4>动机推演</h4>
+      <p><strong>23,861张$612C在ask端买入，0DTE，与#1的巨量卖Call形成直接对手方。</strong>买方认为QQQ在收盘前或明日开盘能站上$618.20(BEP)，赌的是今日V型反弹的延续性。IVR 27%下买入0DTE Call，这是一笔<strong>高杠杆短线投机</strong>，纯粹的Gamma交易。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>策略识别</h4>
+      <p><strong>单腿方向性Call买入，极端短线投机。</strong>0DTE交易的核心逻辑是利用日内Gamma放大效应——如果QQQ在尾盘继续走高，接近$612的Call会快速从OTM变为ATM/ITM，Delta急剧增加带来超额回报。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>BEP可行性</h4>
+      <p>QQQ收在$611.02，BEP $618.20需要再涨1.2%。<strong>0DTE情境下偏难实现</strong>，但考虑到今日尾盘大幅拉升的动能，如果明日开盘跳空高开仍有机会。总体看，这笔交易的胜率约30-35%，但赔率很高。</p>
+    </div>
+    <div class="confidence">置信度:
+      <div class="confidence-bar"><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot"></div><div class="confidence-dot"></div><div class="confidence-dot"></div><div class="confidence-dot"></div><div class="confidence-dot"></div></div> 5/10
+    </div>
+  </div>
+</div>
+
+<!-- #4 NVDA -->
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol">NVDA</span>
+    <span class="ticker-badge badge-bull">强烈看涨</span>
+    <span style="font-size:13px;color:var(--text-secondary)">#4 | $190C 移仓 | <strong style="color:var(--accent-green)">$13.0M</strong></span>
+    <div class="ticker-meta">SM: A级 | IVR: 5%</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <h4>动机推演</h4>
+      <p><strong>A级聪明钱在IVR仅5%的极低波动率环境下进行$190C移仓，结合#6($187.5C移仓 $9.8M, A级)和#9/$19的新建仓Call，NVDA今日出现了系统性的看涨布局。</strong>总计超过$42M的Call集中在$187.5-$190行权价，这是今日所有标的中<strong>方向性最明确、机构共识度最高</strong>的信号。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>策略识别</h4>
+      <p>移仓(Rollover)说明交易者<strong>延续了此前的看涨头寸</strong>，从即将到期的合约滚动到4/17。结合$187.5和$190两个行权价的密集活动，大概率是<strong>大型基金的系统性Call Spread或Covered Call策略调整</strong>。IVR极低(5%)意味着期权便宜，这是「低成本加仓」的最佳时机。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>催化剂</h4>
+      <p>NVDA收在$185.93(今日+0.29%)，半导体ETF SMH已连涨9天+20%。<strong>CoreWeave获Macquarie升级、Anthropic大单确认了AI基础设施需求</strong>。NVDA下一个财报在5/20，当前更多是板块动量驱动。TSMC强劲业绩传导效应仍在持续。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>BEP可行性</h4>
+      <p>BEP $192.32，需从$185.93上涨约3.4%。DTE 4天内实现偏紧，<strong>但如果科技板块反弹持续，完全可能</strong>。Max Pain $182远低于当前价，说明市场已在$182之上形成了新的均衡。</p>
+    </div>
+    <div class="key-levels">
+      <span class="level-chip support">支撑 $182 (Max Pain)</span>
+      <span class="level-chip support">支撑 $185 (密集Put)</span>
+      <span class="level-chip resistance">阻力 $190 (密集Call)</span>
+    </div>
+    <div style="margin-top:12px">
+    <div class="confidence">置信度:
+      <div class="confidence-bar"><div class="confidence-dot active high"></div><div class="confidence-dot active high"></div><div class="confidence-dot active high"></div><div class="confidence-dot active high"></div><div class="confidence-dot active high"></div><div class="confidence-dot active high"></div><div class="confidence-dot active high"></div><div class="confidence-dot active high"></div><div class="confidence-dot"></div><div class="confidence-dot"></div></div> 8/10 - 今日最强信号
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- #5 TSLA Covered Call -->
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol">TSLA</span>
+    <span class="ticker-badge badge-neutral">中性(有顶)</span>
+    <span style="font-size:13px;color:var(--text-secondary)">#5 | $350C 卖出 | <strong style="color:var(--accent-orange)">$12.8M</strong></span>
+    <div class="ticker-meta">SM: C级 | IVR: 16%</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <h4>动机推演</h4>
+      <p><strong>5,785张$350C在bid端卖出，DTE=32天(5/15到期)，OTM 7.1%。</strong>这是经典的<strong>Covered Call收租策略</strong>——交易者持有TSLA正股，在$350上方卖出Call锁定收益。隐含观点极为明确：<strong>TSLA未来一个月涨幅不会超过7%，$350是天花板</strong>。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>策略识别</h4>
+      <p>结合#7($360C卖出 $9.1M, DTE=4天, A级)，TSLA的Call卖出形成了<strong>时间维度的分层防守</strong>：短期$360封顶 + 中期$350封顶。这种多时间框架的卖Call布局，说明交易者对TSLA上行空间<strong>高度悲观</strong>，且是持续性观点而非短期投机。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>催化剂</h4>
+      <p>5/15到期意味着<strong>覆盖了4/22财报</strong>。交易者的逻辑可能是：即使财报后短期反弹，也不会超过$350。考虑到Q1 EPS预期仅$0.33(同比-34%)，这个判断有合理性。$350也恰好是Max Pain位。</p>
+    </div>
+    <div class="key-levels">
+      <span class="level-chip resistance">短期顶 $360 (#7 A级卖Call)</span>
+      <span class="level-chip resistance">中期顶 $350 (#5 卖Call)</span>
+      <span class="level-chip maxpain">Max Pain $350</span>
+    </div>
+    <div style="margin-top:12px">
+    <div class="confidence">置信度:
+      <div class="confidence-bar"><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot active"></div><div class="confidence-dot"></div><div class="confidence-dot"></div><div class="confidence-dot"></div></div> 7/10
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- PART B -->
+<div class="section-title">
+  <div class="icon" style="background:rgba(179,136,255,0.15)">🔗</div>
+  <span>B. 跨交易关联分析</span>
+  <div class="line"></div>
+</div>
+
+<!-- NVDA Cross -->
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol">NVDA</span>
+    <span class="ticker-badge badge-bull">强烈看涨</span>
+    <span style="font-size:13px;color:var(--text-secondary)">48笔 | $96.9M | 看涨25 vs 看跌21</span>
+    <div class="ticker-meta">置信度 8/10</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <h4>组合策略识别</h4>
+      <p>NVDA异动呈现<strong>「低IV环境下的系统性看涨建仓」</strong>：$190C和$187.5C各出现7次异动(含移仓和新建)，累计金额超过$60M。<strong>4笔A级聪明钱全部在Call端</strong>。对手方的$185P(8次异动)和$188P(6次异动)更像是做市商对冲或保护性Put，而非方向性看跌。</p>
+      <p style="margin-top:8px"><strong>关键洞察：IVR仅2%-16%，这意味着NVDA期权在历史低位附近。</strong>聪明钱选择在IV低谷大规模买入Call，这是「买保险最便宜的时候买保险」的经典操作。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>可能的组合结构</h4>
+      <p>$185P密集 + $190C密集 → 可能是<strong>Risk Reversal(卖Put买Call)</strong>，用Put的权利金补贴Call的成本，实现低成本甚至零成本的看涨布局。这是大型基金最常用的看涨结构之一。</p>
+    </div>
+  </div>
+</div>
+
+<!-- TSLA Cross -->
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol">TSLA</span>
+    <span class="ticker-badge badge-mild-bear">温和看跌</span>
+    <span style="font-size:13px;color:var(--text-secondary)">68笔 | $94.0M | 看涨33 vs 看跌32 | Gamma Squeeze高风险</span>
+    <div class="ticker-meta">置信度 6/10</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <h4>矛盾检测与解读</h4>
+      <p>TSLA多空几乎完全对半(33:32)，<strong>但细看质量，空方更有说服力</strong>：</p>
+      <p style="margin-top:8px">
+        <strong>空方主力：</strong>#2 $360P买入($15.5M) + #16 $362.5P买入($5.4M) + #5/#7大规模卖Call($22M) → 系统性看跌/封顶<br>
+        <strong>多方主力：</strong>#12 $335C买入($6.3M, B级) + $352C 5次异动($6M) → 温和看涨但金额较小<br>
+        <strong>A级信号：</strong>#7 $360C卖出是唯一A级TSLA交易，方向偏空
+      </p>
+      <p style="margin-top:8px"><strong>核心矛盾的解释：</strong>多方的Call买入集中在$335-$352(较低行权价)，空方的Put买入和Call卖出集中在$350-$365。这说明<strong>即使是看多者也认为上行空间有限</strong>——他们买的是ATM附近的Call而非高行权价Call。市场共识是：<strong>TSLA被困在$328-$360的区间内</strong>。</p>
+    </div>
+    <div class="analysis-block">
+      <h4>Gamma Squeeze风险</h4>
+      <p>系统检测到TSLA Gamma Squeeze风险为<strong>高</strong>。$350附近的Call和Put都有大量持仓，如果股价快速穿越$350，做市商Delta对冲会放大波动。<strong>财报日(4/22)前后尤其危险</strong>——如果跳空超过$360或跌破$328，可能触发级联效应。</p>
+    </div>
+    <div class="key-levels">
+      <span class="level-chip support">下方支撑 $328 (5次Put异动)</span>
+      <span class="level-chip maxpain">Max Pain $350</span>
+      <span class="level-chip resistance">上方阻力 $360 (A级卖Call)</span>
+      <span class="level-chip resistance">强阻力 $365</span>
+    </div>
+  </div>
+</div>
+
+<!-- META Cross -->
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol">META</span>
+    <span class="ticker-badge badge-mild-bull">温和看涨</span>
+    <span style="font-size:13px;color:var(--text-secondary)">25笔 | $60.5M | 看涨15 vs 看跌9</span>
+    <div class="ticker-meta">置信度 7/10</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <h4>看涨共识最高的标的</h4>
+      <p>META是今日<strong>方向性最一致</strong>的标的：15笔看涨 vs 仅9笔看跌(1.67:1，远高于其他标的)。Call买入覆盖$620-$640全行权价带，$635C出现6次异动成为关键价位。<strong>#13($625C, $6.1M)、#15($630C, $5.8M)、#18($620C 11DTE, $5.1M)</strong>三笔B级看涨大单形成价格阶梯式布局。</p>
+    </div>
+    <div class="key-levels">
+      <span class="level-chip maxpain">Max Pain $620</span>
+      <span class="level-chip resistance">目标 $635 (6次异动)</span>
+      <span class="level-chip resistance">目标 $640+</span>
+    </div>
+  </div>
+</div>
+
+<!-- QQQ Cross -->
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol">QQQ</span>
+    <span class="ticker-badge badge-neutral">中性</span>
+    <span style="font-size:13px;color:var(--text-secondary)">117笔 | $153.8M | 看涨60 vs 看跌57 | 分歧最严重</span>
+    <div class="ticker-meta">置信度 4/10</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <h4>多空严重分歧</h4>
+      <p>QQQ异动量最大(117笔，占总量38.5%)，但多空几乎对等(60:57)。<strong>$610-$615C区间的Call既有大量买入又有大量卖出</strong>，$610P出现13次异动、$614C出现10次异动——做市商在这个区间疯狂交易。</p>
+      <p style="margin-top:8px"><strong>资金流方向不明确。</strong>QQQ作为指数ETF，其期权异动更多反映<strong>宏观情绪和对冲需求</strong>，而非单一方向押注。Max Pain $610恰好是今日收盘价附近，说明市场正在围绕均衡点剧烈震荡。</p>
+    </div>
+  </div>
+</div>
+
+<!-- Smaller tickers -->
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol">GOOGL</span>
+    <span class="ticker-badge badge-neutral">中性</span>
+    <span style="font-size:13px;color:var(--text-secondary)">17笔 | $12.7M | 看涨8 vs 看跌9</span>
+    <div class="ticker-meta">置信度 4/10</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <p>异动量不大，多空基本均衡。$320P出现4次异动值得关注。Max Pain $310远低于现价$315，<strong>下行风险存在但幅度有限</strong>。暂无明确方向信号。</p>
+    </div>
+  </div>
+</div>
+
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol" style="color:var(--accent-cyan)">RKLB</span>
+    <span class="ticker-badge badge-mild-bull">温和看涨</span>
+    <span style="font-size:13px;color:var(--text-secondary)">12笔 | $6.0M | 看涨7 vs 看跌4 | Gamma Squeeze高风险</span>
+    <div class="ticker-meta">置信度 5/10</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <p>RKLB行权价极度分散($65-$78)，但Call占主导。Max Pain $67恰好在当前价，Gamma Squeeze风险高。<strong>核电+太空概念股，高Beta品种</strong>，异动可能与核能需求叙事相关。小盘股期权流动性差，不建议跟随。</p>
+    </div>
+  </div>
+</div>
+
+<div class="ticker-section">
+  <div class="ticker-header">
+    <span class="ticker-symbol" style="color:var(--accent-purple)">ONDS</span>
+    <span class="ticker-badge badge-mild-bull">温和看涨</span>
+    <span style="font-size:13px;color:var(--text-secondary)">17笔 | $3.5M | 看涨10 vs 看跌7 | Gamma Squeeze高风险</span>
+    <div class="ticker-meta">置信度 5/10</div>
+  </div>
+  <div class="ticker-body">
+    <div class="analysis-block">
+      <p>小市值标的，$10C出现5次异动(Max Pain也在$10)。<strong>当前股价$8.97，需涨11.5%才能到$10</strong>。到期日分布偏远(5/8-7/17)，说明这不是短线投机而是中期布局。可能有事件催化剂(并购/产品发布)，但信息不对称风险极高。</p>
+    </div>
+  </div>
+</div>
+
+<!-- Sector -->
+<div class="section-title">
+  <div class="icon" style="background:rgba(24,255,255,0.12)">🌐</div>
+  <span>板块联动与资金流向</span>
+  <div class="line"></div>
+</div>
+
+<div class="summary-box" style="border-color:rgba(24,255,255,0.2);background:linear-gradient(135deg, rgba(24,255,255,0.04), rgba(68,138,255,0.04));">
+  <h3>聪明钱今日整体方向</h3>
+  <p>科技板块占据期权异动金额的<strong>62%($264M)</strong>，其中方向性最明确的是<strong>NVDA看涨</strong>和<strong>META看涨</strong>。</p>
+  <p style="margin-top:12px"><strong>低IVR大额买入</strong>是今日最有价值的信号维度。NVDA在IVR 2-16%下累计$42M+ Call买入，这种「在波动率地板上大规模建仓」的行为，历史上往往出现在<strong>大行情启动前</strong>。聪明钱的逻辑是：趁IV便宜时买入Call期权，等催化剂到来IV扩张时获得方向+Vega双重收益。</p>
+  <p style="margin-top:12px"><strong>宏观层面：</strong>今日市场V型反转(早盘跌0.5%→收涨1%+)说明<strong>逢跌买入(Buy the Dip)的力量仍然强劲</strong>。尽管美伊局势和油价构成持续风险，科技股的AI叙事依然是资金避风港。期权市场反映的不是恐慌，而是<strong>在不确定性中寻找Alpha</strong>。</p>
+</div>
+
+<!-- Part C: Strategy -->
+<div class="section-title">
+  <div class="icon" style="background:rgba(0,230,118,0.12)">💡</div>
+  <span>C. 交易策略建议</span>
+  <div class="line"></div>
+</div>
+
+<div class="strategy-grid">
+  <div class="strategy-card">
+    <div class="tag follow">跟随机会 #1</div>
+    <h4>NVDA Bull Call Spread</h4>
+    <p>今日最高确信的看涨信号。4笔A级聪明钱+低IVR环境下$42M+的系统性Call买入，方向性极强。</p>
+    <div class="entry">
+      <strong>参考入场：</strong>买$187.5C / 卖$195C (4/24到期)<br>
+      <strong>最大风险：</strong>净权利金<br>
+      <strong>目标：</strong>$190-$192区间<br>
+      <strong>止损：</strong>NVDA跌破$182(Max Pain)<br>
+      <strong>注意：</strong>选4/24到期，给催化剂更多时间
+    </div>
+  </div>
+  <div class="strategy-card">
+    <div class="tag follow">跟随机会 #2</div>
+    <h4>META Bull Call Spread</h4>
+    <p>看涨共识度最高的标的，15:9多空比。多笔B级大单形成$620-$640阶梯式看涨布局。</p>
+    <div class="entry">
+      <strong>参考入场：</strong>买$625C / 卖$640C (4/24到期)<br>
+      <strong>最大风险：</strong>净权利金<br>
+      <strong>目标：</strong>$635 (密集异动位)<br>
+      <strong>止损：</strong>META跌破$618
+    </div>
+  </div>
+  <div class="strategy-card">
+    <div class="tag hedge">对冲建议</div>
+    <h4>QQQ Put Spread 保护</h4>
+    <p>地缘风险未消(霍尔木兹封锁持续)，银行财报若不及预期可能打破反弹。在QQQ接近战争以来最高位时，应配置下行保护。</p>
+    <div class="entry">
+      <strong>参考：</strong>买$605P / 卖$595P (4/24到期)<br>
+      <strong>成本：</strong>约占组合0.3-0.5%<br>
+      <strong>保护范围：</strong>QQQ跌至$605以下时生效
+    </div>
+  </div>
+  <div class="strategy-card">
+    <div class="tag hedge">TSLA财报对冲</div>
+    <h4>TSLA Iron Condor</h4>
+    <p>多空极度分裂且Gamma Squeeze风险高。如果持有TSLA仓位，用Iron Condor锁定区间，利用财报前IV膨胀。</p>
+    <div class="entry">
+      <strong>参考：</strong>卖$360C/买$375C + 卖$328P/买$315P<br>
+      <strong>到期：</strong>4/24 (含财报)<br>
+      <strong>最大收益：</strong>净权利金收入<br>
+      <strong>盈利区间：</strong>$328-$360
+    </div>
+  </div>
+</div>
+
+<div class="risk-box" style="margin-top:24px">
+  <h4>风险警告：这些交易看似诱人但风险极高</h4>
+  <p><strong>1. QQQ 0DTE Call买入(#3)：</strong>$14.8M的0DTE Call看起来很有吸引力，但0DTE期权的时间价值以小时为单位蒸发。散户跟随0DTE交易的预期胜率不到20%——机构有量化对冲能力和速度优势，散户不具备。<strong>严禁跟随0DTE单腿裸买。</strong></p>
+  <p style="margin-top:10px"><strong>2. TSLA方向性裸买(无论看涨还是看跌)：</strong>财报前TSLA期权隐含波动率会持续上升，买方付出高额Vega成本。即使方向判断正确，Vega Crush(财报后IV骤降)也可能导致期权价值大幅缩水。<strong>必须用Spread结构控制Vega风险。</strong></p>
+  <p style="margin-top:10px"><strong>3. ONDS/RKLB等小盘股期权：</strong>Gamma Squeeze风险高意味着价格可能剧烈波动，但小盘股期权流动性差、买卖价差大。<strong>散户进去容易出来难</strong>，不建议参与。</p>
+  <p style="margin-top:10px"><strong>4. 地缘风险尾部效应：</strong>霍尔木兹海峡封锁升级可能导致油价突破$120，触发通胀恐慌→科技股抛售。当前市场乐观情绪可能低估了尾部风险。<strong>任何多头仓位都应配备QQQ Put保护。</strong></p>
+</div>
+
+<!-- Watchlist -->
+<div class="section-title">
+  <div class="icon" style="background:rgba(255,215,64,0.12)">👁️</div>
+  <span>D. 未来一周观察名单</span>
+  <div class="line"></div>
+</div>
+
+<div style="overflow-x:auto;">
+<table class="watchlist">
+  <thead><tr><th>标的</th><th>关注价位</th><th>催化剂</th><th>信号方向</th><th>优先级</th></tr></thead>
+  <tbody>
+    <tr><td class="mono">TSLA</td><td class="mono">$328支撑 | $350 Max Pain | $360阻力</td><td>4/22 Q1财报(EPS预期$0.33)</td><td><span class="ticker-badge badge-mild-bear" style="font-size:11px">温和看跌</span></td><td style="color:var(--accent-red)">最高</td></tr>
+    <tr><td class="mono">NVDA</td><td class="mono">$182支撑 | $185密集 | $190阻力</td><td>AI基础设施需求持续 | SMH连涨动能</td><td><span class="ticker-badge badge-bull" style="font-size:11px">强烈看涨</span></td><td style="color:var(--accent-red)">最高</td></tr>
+    <tr><td class="mono">META</td><td class="mono">$620 Max Pain | $635密集 | $640+</td><td>AI广告优化 | Q1财报预期(4月底)</td><td><span class="ticker-badge badge-mild-bull" style="font-size:11px">温和看涨</span></td><td style="color:var(--accent-orange)">高</td></tr>
+    <tr><td class="mono">QQQ</td><td class="mono">$605支撑 | $610 Max Pain | $615阻力</td><td>银行财报(JPM/WFC 4/14) | 油价走势</td><td><span class="ticker-badge badge-neutral" style="font-size:11px">中性</span></td><td style="color:var(--accent-orange)">高</td></tr>
+    <tr><td class="mono">GOOGL</td><td class="mono">$310 Max Pain | $320P密集</td><td>Q1财报(预期4月底)</td><td><span class="ticker-badge badge-neutral" style="font-size:11px">中性</span></td><td style="color:var(--accent-yellow)">中</td></tr>
+    <tr><td class="mono">原油</td><td class="mono">WTI $100 | $104 | $110+</td><td>霍尔木兹海峡封锁进展 | 美伊谈判</td><td><span class="ticker-badge badge-bear" style="font-size:11px">关注上行风险</span></td><td style="color:var(--accent-orange)">高</td></tr>
+  </tbody>
 </table>
 </div>
 
-<div class="strat-box">
-<h2 style="font-size:14px;font-weight:700;color:#ffc048;margin-bottom:12px">交易策略建议 ⚡</h2>
-<p style="font-size:11px;color:#8899aa">占位内容 - 实际使用时展示完整策略表</p>
+<div class="disclaimer">
+  免责声明：本分析仅基于期权异动数据和公开市场信息，不构成任何投资建议。期权交易风险极高，可能导致全部本金损失。Smart Money评分和系统规则引擎分析仅供参考，不保证准确性。请根据自身风险承受能力独立决策，必要时咨询持牌专业投顾。
 </div>
 
-<div class="footer">本地异动追踪 · 2026-04-13 · 仅供研究参考，不构成投资建议</div>
+</div>
 </body>
 </html>

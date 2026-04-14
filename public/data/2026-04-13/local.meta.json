@@ -2,20 +2,21 @@
   "title": "本地异动追踪系统分析",
   "date": "2026-04-13",
   "source": "local",
-  "totalFlow": "$187.5M",
-  "tickers": ["AAPL", "GOOGL", "TSLA", "NVDA", "AMD", "MRVL"],
-  "macro": "自研系统捕获6只标的异动信号，AAPL大单Sweep信号最强，GOOGL与moomoo交叉验证",
+  "totalFlow": "$427.3M",
+  "tickers": ["NVDA", "META", "TSLA", "QQQ", "GOOGL", "RKLB", "ONDS"],
+  "macro": "304笔有效异动，多空比158:139略偏多；NVDA低IVR下$42M+系统性Call买入为今日最强信号；TSLA财报前多空胶着",
   "strategies": [
-    { "sym": "AAPL", "signal": "bullish", "conf": 9, "strategy": "Sweep买入 195C 5/15", "target": "+90%", "risk": "~$800/手" },
-    { "sym": "GOOGL", "signal": "bullish", "conf": 8, "strategy": "连续大单 335C 5/15", "target": "+120%", "risk": "~$650/手" },
-    { "sym": "TSLA", "signal": "neutral", "conf": 4, "strategy": "结构化对冲信号", "target": "N/A", "risk": "N/A" },
-    { "sym": "NVDA", "signal": "bearish", "conf": 6, "strategy": "卖Call信号 190C 5/8", "target": "+30%", "risk": "~$500/手" },
-    { "sym": "AMD", "signal": "bullish", "conf": 7, "strategy": "异常Call量 165C 4/18", "target": "+75%", "risk": "~$400/手" },
-    { "sym": "MRVL", "signal": "bearish", "conf": 7, "strategy": "获利了结信号 110C 6/18", "target": "+35%", "risk": "~$600/手" }
+    { "sym": "NVDA", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread 187.5/195C 4/24", "target": "$190-192", "risk": "净权利金" },
+    { "sym": "META", "signal": "bullish", "conf": 7, "strategy": "Bull Call Spread 625/640C 4/24", "target": "$635", "risk": "净权利金" },
+    { "sym": "TSLA", "signal": "bearish", "conf": 6, "strategy": "Iron Condor 328P-360C 4/24", "target": "$328-360区间", "risk": "净权利金" },
+    { "sym": "QQQ", "signal": "neutral", "conf": 4, "strategy": "Put Spread 605/595P 对冲", "target": "下行保护", "risk": "~0.3-0.5%组合" },
+    { "sym": "GOOGL", "signal": "neutral", "conf": 4, "strategy": "观望 $320P密集", "target": "N/A", "risk": "N/A" },
+    { "sym": "RKLB", "signal": "bullish", "conf": 5, "strategy": "Gamma Squeeze风险 不建议跟随", "target": "N/A", "risk": "高" },
+    { "sym": "ONDS", "signal": "bullish", "conf": 5, "strategy": "中期布局10C 流动性差", "target": "N/A", "risk": "高" }
   ],
   "top3": [
-    { "rank": 1, "sym": "AAPL", "strategy": "Sweep买入 195C 5/15", "conf": 9 },
-    { "rank": 2, "sym": "GOOGL", "strategy": "连续大单 335C 5/15", "conf": 8 },
-    { "rank": 3, "sym": "AMD", "strategy": "异常Call量 165C 4/18", "conf": 7 }
+    { "rank": 1, "sym": "NVDA", "strategy": "Bull Call Spread 187.5/195C 4/24 (最强A级信号)", "conf": 8 },
+    { "rank": 2, "sym": "META", "strategy": "Bull Call Spread 625/640C 4/24 (最高共识度)", "conf": 7 },
+    { "rank": 3, "sym": "TSLA", "strategy": "Iron Condor 328-360 4/24 (财报对冲)", "conf": 6 }
   ]
 }
