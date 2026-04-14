@@ -1,20 +1,22 @@
 {
-  "title": "本地异动追踪系统分析",
+  "title": "本地异动追踪深度分析",
   "date": "2026-04-14",
   "source": "local",
-  "totalFlow": "$156.3M",
-  "tickers": ["AAPL", "NVDA", "MSFT", "TSLA", "COIN"],
-  "macro": "AAPL 195C连续3日Sweep累计$45M，NVDA反转信号出现，MSFT云业务利好推动Call买入",
+  "totalFlow": "$1.27B",
+  "tickers": ["TSLA", "NVDA", "GOOGL", "META", "QQQ", "RKLB", "ONDS"],
+  "macro": "科技连涨10天创2021来最长，Nasdaq+1.96%，但QQQ出现54:112极端看跌信号；NVDA/GOOGL看涨最强，QQQ Put Spread对冲尾部风险",
   "strategies": [
-    { "sym": "AAPL", "signal": "bullish", "conf": 9, "strategy": "3日累积Sweep 195C 5/15", "target": "+100%", "risk": "~$750/手" },
-    { "sym": "NVDA", "signal": "bullish", "conf": 7, "strategy": "反转大单 185C 5/15", "target": "+85%", "risk": "~$600/手" },
-    { "sym": "MSFT", "signal": "bullish", "conf": 6, "strategy": "异常Call量 420C 5/8", "target": "+50%", "risk": "~$900/手" },
-    { "sym": "TSLA", "signal": "bearish", "conf": 6, "strategy": "持续Put买入信号", "target": "+45%", "risk": "~$700/手" },
-    { "sym": "COIN", "signal": "bullish", "conf": 5, "strategy": "BTC联动Call买入", "target": "+80%", "risk": "~$450/手" }
+    { "sym": "NVDA", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread $192.5C/$200C 04/24", "target": "+50%", "risk": "$520/张" },
+    { "sym": "GOOGL", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread $325C/$340C 04/24", "target": "+80%", "risk": "$850/张" },
+    { "sym": "QQQ", "signal": "bearish", "conf": 7, "strategy": "Bear Put Spread $618P/$608P 04/24 (对冲)", "target": "+120%", "risk": "$450/张" },
+    { "sym": "TSLA", "signal": "neutral", "conf": 6, "strategy": "Iron Condor $345P-$375C 04/24 (财报前)", "target": "+50%", "risk": "$500-700/张" },
+    { "sym": "META", "signal": "bullish", "conf": 6, "strategy": "Bull Call Spread $640C/$660C 04/24", "target": "+70%", "risk": "$1200/张" },
+    { "sym": "RKLB", "signal": "bullish", "conf": 5, "strategy": "Long $75C 05/15", "target": "+80%", "risk": "$450/张" },
+    { "sym": "ONDS", "signal": "neutral", "conf": 3, "strategy": "信号不足，不建议参与", "target": "N/A", "risk": "N/A" }
   ],
   "top3": [
-    { "rank": 1, "sym": "AAPL", "strategy": "3日累积Sweep 195C 5/15", "conf": 9 },
-    { "rank": 2, "sym": "NVDA", "strategy": "反转大单 185C 5/15", "conf": 7 },
-    { "rank": 3, "sym": "MSFT", "strategy": "异常Call量 420C 5/8", "conf": 6 }
+    { "rank": 1, "sym": "NVDA", "strategy": "Bull Call Spread $192.5C/$200C 04/24 (5笔A级+$95M密集Call+IVR极低)", "conf": 8 },
+    { "rank": 2, "sym": "GOOGL", "strategy": "Bull Call Spread $325C/$340C 04/24 (Citi催化+4/29财报+最强多空比)", "conf": 8 },
+    { "rank": 3, "sym": "QQQ", "strategy": "Bear Put Spread $618P/$608P 04/24 (54:112极端偏空+连涨10天过热对冲)", "conf": 7 }
   ]
 }
