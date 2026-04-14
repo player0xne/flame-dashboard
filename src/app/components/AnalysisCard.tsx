@@ -13,6 +13,12 @@ const TYPE_BG: Record<AnalysisType, string> = {
   compare: "bg-emerald-500/10",
 };
 
+const TYPE_ICON: Record<AnalysisType, { icon: string; tagBg: string; tagText: string; stripe: string }> = {
+  moomoo: { icon: "M", tagBg: "bg-amber-500/20", tagText: "text-amber-400", stripe: "bg-amber-500" },
+  local: { icon: "L", tagBg: "bg-blue-500/20", tagText: "text-blue-400", stripe: "bg-blue-500" },
+  compare: { icon: "VS", tagBg: "bg-emerald-500/20", tagText: "text-emerald-400", stripe: "bg-emerald-500" },
+};
+
 const SIGNAL_STYLE: Record<string, { bg: string; text: string; label: string }> = {
   bullish: { bg: "bg-green-500/15", text: "text-green-400", label: "看涨" },
   bearish: { bg: "bg-red-500/15", text: "text-red-400", label: "看跌" },
@@ -33,10 +39,12 @@ export default function AnalysisCard({
   const label = getAnalysisLabel(type);
   const colorClass = TYPE_COLORS[type];
   const bgClass = TYPE_BG[type];
+  const icon = TYPE_ICON[type];
 
   if (!hasContent) {
     return (
       <div className="rounded-xl border border-card-border bg-card-bg/50 p-4 flex flex-col items-center justify-center min-h-[120px] opacity-40">
+        <span className={`text-lg font-black ${icon.tagText} mb-1`}>{icon.icon}</span>
         <span className="text-sm text-muted">{label}</span>
         <span className="text-xs text-muted mt-1">暂无数据</span>
       </div>
@@ -48,11 +56,19 @@ export default function AnalysisCard({
     return (
       <Link href={`/analysis/${date}/${type}`} className="block">
         <div
-          className={`rounded-xl border-2 ${colorClass} ${bgClass} p-3 hover:scale-[1.01] transition-transform cursor-pointer`}
+          className={`rounded-xl border-2 ${colorClass} ${bgClass} p-3 hover:scale-[1.01] transition-transform cursor-pointer relative overflow-hidden`}
         >
-          {/* Header */}
-          <div className="flex items-center justify-between mb-2">
-            <span className={`text-xs font-bold ${colorClass}`}>{label}</span>
+          {/* Top color stripe */}
+          <div className={`absolute top-0 left-0 right-0 h-1 ${icon.stripe}`} />
+
+          {/* Header with source badge */}
+          <div className="flex items-center justify-between mb-2 mt-1">
+            <div className="flex items-center gap-1.5">
+              <span className={`${icon.tagBg} ${icon.tagText} text-[10px] font-black px-1.5 py-0.5 rounded`}>
+                {icon.icon}
+              </span>
+              <span className={`text-xs font-bold ${colorClass}`}>{label}</span>
+            </div>
             {meta.totalFlow && (
               <span className="text-[10px] font-mono text-muted">
                 {meta.totalFlow}
@@ -121,8 +137,12 @@ export default function AnalysisCard({
   return (
     <Link href={`/analysis/${date}/${type}`} className="block">
       <div
-        className={`rounded-xl border-2 ${colorClass} ${bgClass} p-4 flex flex-col items-center justify-center min-h-[120px] hover:scale-[1.02] transition-transform cursor-pointer`}
+        className={`rounded-xl border-2 ${colorClass} ${bgClass} p-4 flex flex-col items-center justify-center min-h-[120px] hover:scale-[1.02] transition-transform cursor-pointer relative overflow-hidden`}
       >
+        <div className={`absolute top-0 left-0 right-0 h-1 ${icon.stripe}`} />
+        <span className={`${icon.tagBg} ${icon.tagText} text-sm font-black px-2 py-0.5 rounded mb-2`}>
+          {icon.icon}
+        </span>
         <span className={`text-sm font-medium ${colorClass}`}>{label}</span>
         <span className="text-xs text-muted mt-2">点击查看详情</span>
       </div>
