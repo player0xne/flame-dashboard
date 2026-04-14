@@ -1,0 +1,20 @@
+{
+  "title": "本地异动追踪系统分析",
+  "date": "2026-04-14",
+  "source": "local",
+  "totalFlow": "$156.3M",
+  "tickers": ["AAPL", "NVDA", "MSFT", "TSLA", "COIN"],
+  "macro": "AAPL 195C连续3日Sweep累计$45M，NVDA反转信号出现，MSFT云业务利好推动Call买入",
+  "strategies": [
+    { "sym": "AAPL", "signal": "bullish", "conf": 9, "strategy": "3日累积Sweep 195C 5/15", "target": "+100%", "risk": "~$750/手" },
+    { "sym": "NVDA", "signal": "bullish", "conf": 7, "strategy": "反转大单 185C 5/15", "target": "+85%", "risk": "~$600/手" },
+    { "sym": "MSFT", "signal": "bullish", "conf": 6, "strategy": "异常Call量 420C 5/8", "target": "+50%", "risk": "~$900/手" },
+    { "sym": "TSLA", "signal": "bearish", "conf": 6, "strategy": "持续Put买入信号", "target": "+45%", "risk": "~$700/手" },
+    { "sym": "COIN", "signal": "bullish", "conf": 5, "strategy": "BTC联动Call买入", "target": "+80%", "risk": "~$450/手" }
+  ],
+  "top3": [
+    { "rank": 1, "sym": "AAPL", "strategy": "3日累积Sweep 195C 5/15", "conf": 9 },
+    { "rank": 2, "sym": "NVDA", "strategy": "反转大单 185C 5/15", "conf": 7 },
+    { "rank": 3, "sym": "MSFT", "strategy": "异常Call量 420C 5/8", "conf": 6 }
+  ]
+}

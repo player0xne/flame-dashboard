@@ -1,0 +1,21 @@
+{
+  "title": "本地异动追踪系统分析",
+  "date": "2026-04-15",
+  "source": "local",
+  "totalFlow": "$203.1M",
+  "tickers": ["TSLA", "AAPL", "GOOGL", "NVDA", "MRVL", "SOFI"],
+  "macro": "TSLA财报前本地系统检测到IV飙升+大单分歧，AAPL信号减弱但仍偏多，NVDA出现新一轮买入信号",
+  "strategies": [
+    { "sym": "TSLA", "signal": "neutral", "conf": 5, "strategy": "IV飙升 Straddle信号 350 4/25", "target": "±8%波动", "risk": "~$2000/手" },
+    { "sym": "AAPL", "signal": "bullish", "conf": 6, "strategy": "信号减弱但仍偏多 200C", "target": "+50%", "risk": "已入场" },
+    { "sym": "GOOGL", "signal": "bullish", "conf": 8, "strategy": "持续Sweep 340C 5/15", "target": "+65%", "risk": "~$800/手" },
+    { "sym": "NVDA", "signal": "bullish", "conf": 7, "strategy": "新一轮Sweep 190C 5/15", "target": "+70%", "risk": "~$700/手" },
+    { "sym": "MRVL", "signal": "bearish", "conf": 6, "strategy": "反弹卖Call 135C 6/18", "target": "+25%", "risk": "~$500/手" },
+    { "sym": "SOFI", "signal": "bullish", "conf": 6, "strategy": "连续2日异常Call买入 15C", "target": "+180%", "risk": "~$75/手" }
+  ],
+  "top3": [
+    { "rank": 1, "sym": "GOOGL", "strategy": "持续Sweep 340C 5/15", "conf": 8 },
+    { "rank": 2, "sym": "NVDA", "strategy": "新一轮Sweep 190C 5/15", "conf": 7 },
+    { "rank": 3, "sym": "SOFI", "strategy": "连续异常Call买入 15C 6/18", "conf": 6 }
+  ]
+}

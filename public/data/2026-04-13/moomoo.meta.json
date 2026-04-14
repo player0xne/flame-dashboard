@@ -1,0 +1,23 @@
+{
+  "title": "Moomoo 异动期权深度分析",
+  "date": "2026-04-13",
+  "source": "moomoo",
+  "totalFlow": "$292.2M",
+  "tickers": ["GOOGL", "GLD", "MRVL", "TSLA", "NVDA", "META", "PLTR", "ONDS"],
+  "macro": "美伊谈判破裂→油价+8%、VIX+10%，但SPX逆转收涨1%，科技/AI领涨",
+  "strategies": [
+    { "sym": "GOOGL", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread 330/345C 5/15", "target": "+130%", "risk": "~$600/手" },
+    { "sym": "GLD", "signal": "bullish", "conf": 6, "strategy": "Calendar Spread 465C 5/15 vs 5/1", "target": "+80%", "risk": "~$500/手" },
+    { "sym": "MRVL", "signal": "bearish", "conf": 7, "strategy": "Bear Call Credit 140/150C 6/18", "target": "+35%", "risk": "~$650/手" },
+    { "sym": "TSLA", "signal": "neutral", "conf": 5, "strategy": "Iron Condor 320P-380C 4/25", "target": "+40-55%", "risk": "~$1000/手" },
+    { "sym": "NVDA", "signal": "bearish", "conf": 6, "strategy": "Protective Collar 165P/195C 6/18", "target": "保护持仓", "risk": "零成本" },
+    { "sym": "META", "signal": "bullish", "conf": 7, "strategy": "Long 625C 4/24", "target": "+60-100%", "risk": "~$1000/手" },
+    { "sym": "PLTR", "signal": "bullish", "conf": 6, "strategy": "Bull Put Credit 125/115P 5/15", "target": "+25-35%", "risk": "~$700/手" },
+    { "sym": "ONDS", "signal": "bullish", "conf": 5, "strategy": "Long 10C 7/17", "target": "+150%", "risk": "~$70/手" }
+  ],
+  "top3": [
+    { "rank": 1, "sym": "GOOGL", "strategy": "Bull Call Spread 330/345C 5/15", "conf": 8 },
+    { "rank": 2, "sym": "META", "strategy": "Long 625C 4/24", "conf": 7 },
+    { "rank": 3, "sym": "MRVL", "strategy": "Bear Call Credit 140/150C 6/18", "conf": 7 }
+  ]
+}

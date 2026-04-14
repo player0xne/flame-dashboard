@@ -1,0 +1,22 @@
+{
+  "title": "Moomoo 异动期权深度分析",
+  "date": "2026-04-14",
+  "source": "moomoo",
+  "totalFlow": "$245.8M",
+  "tickers": ["AAPL", "AMZN", "TSLA", "SPY", "NVDA", "COIN", "PLTR"],
+  "macro": "油价回落3%缓解恐慌，SPX续涨+0.6%，AAPL财报前Call量激增，COIN随BTC突破$95K暴涨",
+  "strategies": [
+    { "sym": "AAPL", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread 200/215C 5/15", "target": "+110%", "risk": "~$700/手" },
+    { "sym": "AMZN", "signal": "bullish", "conf": 7, "strategy": "Long 195C 5/8", "target": "+80%", "risk": "~$900/手" },
+    { "sym": "TSLA", "signal": "bearish", "conf": 6, "strategy": "Bear Put Spread 330/310P 4/25", "target": "+60%", "risk": "~$800/手" },
+    { "sym": "SPY", "signal": "neutral", "conf": 5, "strategy": "Iron Condor 540/560P-580/600C", "target": "+40%", "risk": "~$1200/手" },
+    { "sym": "NVDA", "signal": "bullish", "conf": 7, "strategy": "Bull Call 185/200C 5/15", "target": "+95%", "risk": "~$650/手" },
+    { "sym": "COIN", "signal": "bullish", "conf": 6, "strategy": "Long 280C 5/15", "target": "+120%", "risk": "~$500/手" },
+    { "sym": "PLTR", "signal": "bullish", "conf": 5, "strategy": "Bull Put Credit 125/115P", "target": "+25%", "risk": "~$700/手" }
+  ],
+  "top3": [
+    { "rank": 1, "sym": "AAPL", "strategy": "Bull Call Spread 200/215C 5/15", "conf": 8 },
+    { "rank": 2, "sym": "NVDA", "strategy": "Bull Call 185/200C 5/15", "conf": 7 },
+    { "rank": 3, "sym": "AMZN", "strategy": "Long 195C 5/8", "conf": 7 }
+  ]
+}

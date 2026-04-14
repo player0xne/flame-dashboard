@@ -1,0 +1,22 @@
+{
+  "title": "两系统对比分析",
+  "date": "2026-04-15",
+  "source": "compare",
+  "totalFlow": "$318.6M + $203.1M",
+  "tickers": ["GOOGL", "TSLA", "AAPL", "NVDA", "SOFI", "META", "MRVL"],
+  "macro": "GOOGL连续3日双系统最强共振，TSLA财报前moomoo偏多vs本地中性，SOFI小盘双系统共振值得关注",
+  "strategies": [
+    { "sym": "GOOGL", "signal": "bullish", "conf": 9, "strategy": "3日双系统持续共振 → 最高优先级", "target": "+75%", "risk": "~$800/手" },
+    { "sym": "TSLA", "signal": "neutral", "conf": 5, "strategy": "moomoo偏多vs本地中性 → Straddle", "target": "±8%", "risk": "~$2000/手" },
+    { "sym": "AAPL", "signal": "bullish", "conf": 7, "strategy": "双系统偏多但信号减弱 → 续持", "target": "+50%", "risk": "已入场" },
+    { "sym": "NVDA", "signal": "bullish", "conf": 7, "strategy": "本地新买入+moomoo续多 → 加仓", "target": "+70%", "risk": "~$700/手" },
+    { "sym": "SOFI", "signal": "bullish", "conf": 6, "strategy": "双系统小盘共振 → Long 15C", "target": "+180%", "risk": "~$80/手" },
+    { "sym": "META", "signal": "bearish", "conf": 5, "strategy": "仅moomoo看跌 → 观望", "target": "N/A", "risk": "N/A" },
+    { "sym": "MRVL", "signal": "bearish", "conf": 5, "strategy": "仅本地看跌 → 轻仓", "target": "+25%", "risk": "~$500/手" }
+  ],
+  "top3": [
+    { "rank": 1, "sym": "GOOGL", "strategy": "3日双系统持续共振 → 最高优先级加仓", "conf": 9 },
+    { "rank": 2, "sym": "NVDA", "strategy": "本地新信号+moomoo续多 → 加仓 190C", "conf": 7 },
+    { "rank": 3, "sym": "AAPL", "strategy": "双系统偏多信号减弱 → 续持不加仓", "conf": 7 }
+  ]
+}

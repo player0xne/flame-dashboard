@@ -1,0 +1,21 @@
+{
+  "title": "两系统对比分析",
+  "date": "2026-04-13",
+  "source": "compare",
+  "totalFlow": "$292.2M + $187.5M",
+  "tickers": ["GOOGL", "MRVL", "NVDA", "TSLA", "AAPL", "META"],
+  "macro": "GOOGL/MRVL两系统一致看涨/看跌，AAPL仅本地捕获，META仅moomoo捕获，验证互补价值",
+  "strategies": [
+    { "sym": "GOOGL", "signal": "bullish", "conf": 9, "strategy": "双系统一致看涨 335C", "target": "+130%", "risk": "~$600/手" },
+    { "sym": "MRVL", "signal": "bearish", "conf": 8, "strategy": "双系统一致看跌 卖Call", "target": "+35%", "risk": "~$650/手" },
+    { "sym": "AAPL", "signal": "bullish", "conf": 7, "strategy": "仅本地捕获 Sweep信号", "target": "+90%", "risk": "~$800/手" },
+    { "sym": "NVDA", "signal": "bearish", "conf": 7, "strategy": "双系统一致对冲格局", "target": "保护持仓", "risk": "零成本" },
+    { "sym": "TSLA", "signal": "neutral", "conf": 4, "strategy": "两系统均为结构化交易", "target": "N/A", "risk": "N/A" },
+    { "sym": "META", "signal": "bullish", "conf": 6, "strategy": "仅moomoo捕获 625C", "target": "+60%", "risk": "~$1000/手" }
+  ],
+  "top3": [
+    { "rank": 1, "sym": "GOOGL", "strategy": "双系统一致看涨 → Bull Call Spread 330/345C", "conf": 9 },
+    { "rank": 2, "sym": "MRVL", "strategy": "双系统一致看跌 → Bear Call Credit 140/150C", "conf": 8 },
+    { "rank": 3, "sym": "AAPL", "strategy": "本地独有Sweep → Long 195C 5/15", "conf": 7 }
+  ]
+}

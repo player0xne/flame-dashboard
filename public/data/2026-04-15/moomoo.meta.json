@@ -1,0 +1,23 @@
+{
+  "title": "Moomoo 异动期权深度分析",
+  "date": "2026-04-15",
+  "source": "moomoo",
+  "totalFlow": "$318.6M",
+  "tickers": ["TSLA", "GOOGL", "AAPL", "META", "AMZN", "SPY", "QQQ", "SOFI"],
+  "macro": "TSLA财报前夕Call/Put双爆量$120M+，GOOGL财报后涨5%续买335C，SPY/QQQ Put量增暗示大盘分歧",
+  "strategies": [
+    { "sym": "TSLA", "signal": "bullish", "conf": 7, "strategy": "Bull Call Spread 360/385C 5/15", "target": "+90%", "risk": "~$1000/手" },
+    { "sym": "GOOGL", "signal": "bullish", "conf": 8, "strategy": "加仓 Long 340C 5/15", "target": "+75%", "risk": "~$800/手" },
+    { "sym": "AAPL", "signal": "bullish", "conf": 7, "strategy": "续持 200/215C Spread", "target": "+60%", "risk": "已入场" },
+    { "sym": "META", "signal": "bearish", "conf": 6, "strategy": "获利了结 Bear Call 650/665C", "target": "+30%", "risk": "~$700/手" },
+    { "sym": "AMZN", "signal": "bullish", "conf": 6, "strategy": "Long 200C 5/15", "target": "+70%", "risk": "~$850/手" },
+    { "sym": "SPY", "signal": "bearish", "conf": 5, "strategy": "Protective Put 550P 5/15", "target": "保护", "risk": "~$600/手" },
+    { "sym": "QQQ", "signal": "neutral", "conf": 4, "strategy": "Straddle 470 5/8", "target": "±5%波动", "risk": "~$1500/手" },
+    { "sym": "SOFI", "signal": "bullish", "conf": 5, "strategy": "Long 15C 6/18", "target": "+200%", "risk": "~$80/手" }
+  ],
+  "top3": [
+    { "rank": 1, "sym": "GOOGL", "strategy": "加仓 Long 340C 5/15 (财报后续)", "conf": 8 },
+    { "rank": 2, "sym": "TSLA", "strategy": "Bull Call Spread 360/385C 5/15 (财报博弈)", "conf": 7 },
+    { "rank": 3, "sym": "AAPL", "strategy": "续持 200/215C Spread (动量延续)", "conf": 7 }
+  ]
+}

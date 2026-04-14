@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moomoo 异动期权分析 - 2026-04-13</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0f1419; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+const { useState } = React;
+
+const COLORS = {
+  bg: "#0f1419", card: "#1a2332", cardAlt: "#16202e", border: "#2a3a4e",
+  text: "#e8edf3", textMuted: "#8899aa", green: "#00d26a", greenDim: "#0a3d2a",
+  red: "#ff4757", redDim: "#3d1520", yellow: "#ffc048", yellowDim: "#3d3015",
+  orange: "#ff7b42", blue: "#4da6ff", purple: "#a78bfa", accent: "#00d26a",
+  stratBg: "#0d2137", stratBorder: "#1a4060",
+};
+
+const macroData = {
+  date: "2026-04-13 (周一)",
+  spx: { val: "6,886", chg: "+1.02%" },
+  qqq: { val: "611.84", chg: "+1.23%" },
+  vix: { val: "21.04", chg: "+10% 盘前" },
+  oil: { val: "$104.40 WTI", chg: "+8.1%" },
+  gold: { val: "$4,728/oz", chg: "-0.7%" },
+  headline: "美伊谈判破裂 → 特朗普宣布封锁霍尔木兹海峡 → 油价飙升8%、VIX盘前跳升10%、黄金回落至$4,717；但盘中SPX逆转收涨1%至5周高位，软件/AI板块领涨（Oracle +13%, PLTR +6%），市场押注冲突终将解决。",
+  coreConclusion: "地缘风险 vs 风险偏好角力：油价暴涨推高通胀预期，但市场选择看穿冲突→科技/AI领涨、黄金承压。期权异动显示：GOOGL/GLD 大额看多主导，MRVL 大额卖Call获利了结，TSLA 超级大单500P为对冲/结构交易。",
+};
+
+const tickers = [
+  {
+    sym: "GOOGL", price: "$317.35", signal: "🟢", label: "强烈看涨", confidence: 8,
+    netBull: "+$31.2M", netBear: "+$7.8M", total: "$65.1M",
+    reason: "335C 5/15 主动买入$20.7M (V/OI=9.78 极高) + 335C 6/18 买入$3.6M + 330C 5/15 买入$3.1M，看多资金集中在32-66天335附近。340C混合可能是价差对手盘。330P 1/15/27 买入$5.2M 为长期保护。",
+    catalyst: "AI搜索/云增长叙事持续；Mag7整体受益于市场风险偏好回升；Q1财报4/24，机构提前布局。",
+    topContracts: [
+      { strike: "335C", exp: "5/15", dte: 32, dir: "🟢看多", active: "买入", vol: "$20.66M", voi: "9.78" },
+      { strike: "340C", exp: "6/18", dte: 66, dir: "🟡混合", active: "混合", vol: "$20.92M", voi: "0.92" },
+      { strike: "330P", exp: "1/15/27", dte: 277, dir: "🔴看空", active: "买入", vol: "$5.22M", voi: "0.56" },
+      { strike: "335C", exp: "6/18", dte: 66, dir: "🟢看多", active: "买入", vol: "$3.59M", voi: "0.62" },
+      { strike: "315C", exp: "5/15", dte: 32, dir: "🟡混合", active: "混合", vol: "$4.94M", voi: "0.66" },
+    ],
+  },
+  {
+    sym: "GLD", price: "$472.8 (≈$4,728/oz)", signal: "🟡", label: "温和看涨", confidence: 6,
+    netBull: "+$40.2M", netBear: "+$18.0M", total: "$64.9M",
+    reason: "465C 5/15 主动买入$22.7M + 485C 5/15 买入$9.9M 为强力看多锚点。但465C 5/1 卖出$9M + 460C 5/15 卖出$2.6M 显示有机构在近月到期卖Call收权利金。434C 4/24 V/OI=33 极高是短线投机。多空并存但买方净额更大。",
+    catalyst: "黄金$4,700-4,780区间震荡；美伊谈判破裂本应利好黄金但油价暴涨推高美元，金价反而承压(-0.7%)。短期可能继续区间震荡，关注$4,600支撑。",
+    topContracts: [
+      { strike: "465C", exp: "5/15", dte: 32, dir: "🟢看多", active: "买入", vol: "$22.68M", voi: "0.88" },
+      { strike: "485C", exp: "5/15", dte: 32, dir: "🟢看多", active: "买入", vol: "$9.90M", voi: "0.96" },
+      { strike: "465C", exp: "5/1", dte: 18, dir: "🔴看空", active: "卖出", vol: "$9.02M", voi: "1.00" },
+      { strike: "435C", exp: "6/18", dte: 66, dir: "🔴看空", active: "卖出", vol: "$4.12M", voi: "0.20" },
+      { strike: "434C", exp: "4/24", dte: 11, dir: "🟢看多", active: "买入", vol: "$2.89M", voi: "33.16" },
+    ],
+  },
+  {
+    sym: "MRVL", price: "$128.49", signal: "🟠", label: "温和看跌", confidence: 7,
+    netBull: "+$12.2M", netBear: "+$33.2M", total: "$61.7M",
+    reason: "110C 6/18 卖出$12.1M + 95C 9/18 卖出$10.8M + 180C 6/18 卖出$7.2M (V/OI=61!) → 明确的Covered Call/获利了结信号。130C 6/18 买入$7.3M可能是价差多头。月内暴涨50%+后，机构在高位大规模卖Call锁定利润。",
+    catalyst: "NVDA $20亿投资+NVLink Fusion合作→月涨50%。Barclays升级至$150目标。但短期涨幅过大，获利了结压力显著。光互连超级周期叙事仍在。",
+    topContracts: [
+      { strike: "110C", exp: "6/18", dte: 66, dir: "🔴看空", active: "卖出", vol: "$12.11M", voi: "0.63" },
+      { strike: "95C", exp: "9/18", dte: 158, dir: "🔴看空", active: "卖出", vol: "$10.84M", voi: "0.46" },
+      { strike: "125C", exp: "6/18", dte: 66, dir: "🟡混合", active: "混合", vol: "$9.83M", voi: "0.55" },
+      { strike: "130C", exp: "6/18", dte: 66, dir: "🟢看多", active: "买入", vol: "$7.27M", voi: "0.62" },
+      { strike: "180C", exp: "6/18", dte: 66, dir: "🔴看空", active: "卖出", vol: "$7.21M", voi: "60.98" },
+    ],
+  },
+  {
+    sym: "TSLA", price: "$349 (盘后~$340)", signal: "⚪", label: "中性/对冲", confidence: 4,
+    netBull: "+$0.8M", netBear: "+$1.0M", total: "$58.5M",
+    reason: "500P 4/17 $56.7M (DTE=4) 占总额97%! 混合方向 → 大概率是机构结构化交易(Collar/合成)而非纯方向押注。350P 4/15 买入$0.68M为短期保护。375C 4/17 买入仅$0.17M。极小合约体量暗示散户缺乏信心。",
+    catalyst: "Q1财报4/22即将来临；Peter Thiel清仓TSLA；Robotaxi扩张但核心EV业务疲软；分析师中位目标$460 vs 当前$349。500P为深度虚值→可能是尾部风险对冲。",
+    topContracts: [
+      { strike: "500P", exp: "4/17", dte: 4, dir: "🟡混合", active: "混合", vol: "$56.68M", voi: "1.34" },
+      { strike: "350P", exp: "4/15", dte: 2, dir: "🔴看空", active: "买入", vol: "$0.68M", voi: "7.47" },
+      { strike: "375C", exp: "4/17", dte: 4, dir: "🟢看多", active: "买入", vol: "$0.17M", voi: "1.58" },
+      { strike: "330P", exp: "4/17", dte: 4, dir: "🟢看多", active: "卖出", vol: "$0.21M", voi: "0.52" },
+    ],
+  },
+  {
+    sym: "NVDA", price: "$177.28", signal: "🟠", label: "温和看跌", confidence: 6,
+    netBull: "+$9.8M", netBear: "+$15.0M", total: "$24.9M",
+    reason: "190C 5/8 卖出$4.2M + 220C 7/17 卖出$1.4M → 上方卖压。150P 8/21 买入$4.1M + 180P 5/15 买入$2.2M → 下行保护。110P 1/15/27 卖出$3.4M 为远期卖Put(看多底线)。整体呈现'上有盖、下有托'的对冲格局。",
+    catalyst: "MRVL合作利好但NVDA自身无新催化剂；Blackwell量产顺利；H100出口管制仍是风险因子。187.5C 4/17 买入$2.9M为短期投机看反弹。",
+    topContracts: [
+      { strike: "190C", exp: "5/8", dte: 25, dir: "🔴看空", active: "卖出", vol: "$4.19M", voi: "0.63" },
+      { strike: "150P", exp: "8/21", dte: 130, dir: "🔴看空", active: "买入", vol: "$4.08M", voi: "0.38" },
+      { strike: "110P", exp: "1/15/27", dte: 277, dir: "🟢看多", active: "卖出", vol: "$3.43M", voi: "0.43" },
+      { strike: "187.5C", exp: "4/17", dte: 4, dir: "🟢看多", active: "买入", vol: "$2.87M", voi: "0.33" },
+      { strike: "180P", exp: "5/15", dte: 32, dir: "🔴看空", active: "买入", vol: "$2.19M", voi: "0.13" },
+    ],
+  },
+  {
+    sym: "META", price: "$620+", signal: "🟢", label: "看涨", confidence: 7,
+    netBull: "+$4.1M", netBear: "+$1.4M", total: "$8.6M",
+    reason: "620C + 640C 4/24 主动买入$3.2M合计，短期11天到期→高Gamma投机。622.5C 4/24 中性$2M可能是价差腿。635C 4/24 卖出$1.2M为对手盘上盖。630C 4/17 买入$0.88M为本周到期超短线。",
+    catalyst: "Meta今日发布超级智能实验室首个AI模型 (Muse Spark)；广告收入增长+PayPal合作利好；盘中涨约4%。短期催化剂密集。",
+    topContracts: [
+      { strike: "620C", exp: "4/24", dte: 11, dir: "🟢看多", active: "买入", vol: "$2.21M", voi: "3.06" },
+      { strike: "622.5C", exp: "4/24", dte: 11, dir: "⚪中性", active: "混合", vol: "$2.04M", voi: "39.00" },
+      { strike: "635C", exp: "4/24", dte: 11, dir: "🔴看空", active: "卖出", vol: "$1.20M", voi: "1.33" },
+      { strike: "640C", exp: "4/24", dte: 11, dir: "🟢看多", active: "买入", vol: "$1.00M", voi: "0.67" },
+    ],
+  },
+  {
+    sym: "PLTR", price: "$132.51", signal: "🟡", label: "温和看涨", confidence: 6,
+    netBull: "+$4.6M", netBear: "+$1.3M", total: "$7.0M",
+    reason: "125P 6/18 卖出$1.3M + 135P 5/15 卖出$1.1M → 卖Put = 看涨底部支撑。130C 4/17 买入$0.88M + 140C 4/17 混合$1.1M为短期方向博弈。134P 4/17 卖出 V/OI=7.88 → 短期看涨信号。Burry警告后stock仍涨6%显示买盘强劲。",
+    catalyst: "盘中大涨+6%；Goldman看好软件板块；Cathie Wood逆Burry买入PLTR；5/11财报临近。政府AI合同+Gotham/Foundry增长叙事。",
+    topContracts: [
+      { strike: "125P", exp: "6/18", dte: 66, dir: "🟢看多", active: "卖出", vol: "$1.27M", voi: "0.17" },
+      { strike: "140C", exp: "4/17", dte: 4, dir: "🟡混合", active: "混合", vol: "$1.13M", voi: "1.87" },
+      { strike: "135P", exp: "5/15", dte: 32, dir: "🟢看多", active: "卖出", vol: "$1.05M", voi: "0.18" },
+      { strike: "130C", exp: "4/17", dte: 4, dir: "🟢看多", active: "买入", vol: "$0.88M", voi: "0.44" },
+    ],
+  },
+  {
+    sym: "ONDS", price: "$9.13", signal: "🟢", label: "看涨", confidence: 5,
+    netBull: "+$1.1M", netBear: "+$0.1M", total: "$1.5M",
+    reason: "10C 7/17 买入$0.27M (V/OI=11.56高) + 9C 5/1 买入$0.19M + 11C 6/18 买入$0.15M → 多个月份Call主动买入。9P 4/17 卖出$0.31M = 看多。13C 5/15 卖出$0.13M为上盖。小市值标的，$1.5M异动具有参考意义。",
+    catalyst: "收购World View完成；4M Defense中标以色列$5000万+排雷项目；FY26收入指引$375M (vs 分析师$177M)；分析师一致Strong Buy，目标$19.83。",
+    topContracts: [
+      { strike: "9P", exp: "4/17", dte: 4, dir: "🟢看多", active: "卖出", vol: "$0.31M", voi: "0.81" },
+      { strike: "10C", exp: "7/17", dte: 95, dir: "🟢看多", active: "买入", vol: "$0.27M", voi: "11.56" },
+      { strike: "9C", exp: "5/1", dte: 18, dir: "🟢看多", active: "买入", vol: "$0.19M", voi: "3.69" },
+      { strike: "11C", exp: "6/18", dte: 66, dir: "🟢看多", active: "买入", vol: "$0.15M", voi: "0.12" },
+    ],
+  },
+];
+
+const strategies = [
+  { sym: "GOOGL", type: "Bull Call Spread", legs: "Buy 330C 5/15 + Sell 345C 5/15", entry: "$5.50-$6.50 净借方", target: "$15 (max profit) / +130%", stop: "股价跌破$310平仓", maxRisk: "~$600/手", hold: "2-4周", conf: 8, reason: "335C V/OI=9.78极强买入信号，财报4/24前布局。330-345价差捕捉$330→$345区间。" },
+  { sym: "GLD", type: "Bull Call Spread (日历)", legs: "Buy 465C 5/15 + Sell 465C 5/1", entry: "净借方$4.00-$5.00", target: "5/1到期后前腿归零，后腿升值 / +80%", stop: "GLD跌破$450平仓", maxRisk: "~$500/手", hold: "18天至5/1", conf: 6, reason: "465C 5/15有$22.7M大买单锚定；465C 5/1有$9M卖出→日历价差天然成型，吃时间价值差。" },
+  { sym: "MRVL", type: "Bear Call Credit Spread", legs: "Sell 140C 6/18 + Buy 150C 6/18", entry: "净贷方$2.50-$3.50", target: "到期归零收全额 / +35%", stop: "股价突破$145平仓", maxRisk: "~$650/手", hold: "4-6周", conf: 7, reason: "110C+95C+180C大规模卖出 → 机构看MRVL上行有限。月涨50%后回调概率高。140-150区间安全边际充足。" },
+  { sym: "TSLA", type: "Iron Condor", legs: "Sell 320P/Buy 305P + Sell 380C/Buy 395C (4/25到期)", entry: "净贷方$4.00-$5.50", target: "到期收全额 / 40-55%ROI", stop: "任一腿被突破时止损50%", maxRisk: "~$1000/手", hold: "到4/22财报前平仓", conf: 5, reason: "500P超大单为结构对冲→真实方向不明。看多看空净额接近→区间震荡概率大。320-380为安全区间。注意4/22财报风险!" },
+  { sym: "NVDA", type: "Protective Collar (持仓者)", legs: "持有正股 + Buy 165P 6/18 + Sell 195C 6/18", entry: "零成本或小额净贷方", target: "保护下行至$165，放弃$195以上上行", stop: "N/A (结构性保护)", maxRisk: "股价跌至$165以下风险", hold: "至6月到期", conf: 6, reason: "190C卖出$4.2M + 165P卖出$2.4M → 机构正在做Collar。跟随Smart Money保护已有持仓。" },
+  { sym: "META", type: "Long Call", legs: "Buy 625C 4/24", entry: "$8.00-$12.00", target: "$20+ / +60-100%", stop: "META跌破$610或期权价值缩水50%", maxRisk: "~$1000/手", hold: "1-2周 (财报前)", conf: 7, reason: "620C主动买入$2.2M + 640C买入$1M，短期催化剂密集(AI模型发布+广告增长)。高Gamma短线博弈。" },
+  { sym: "PLTR", type: "Bull Put Credit Spread", legs: "Sell 125P 5/15 + Buy 115P 5/15", entry: "净贷方$2.00-$3.00", target: "到期归零 / +25-35%", stop: "股价跌破$127平仓", maxRisk: "~$700/手", hold: "4周", conf: 6, reason: "125P+135P大额卖出 → 机构认为$125为强支撑。Cathie Wood买入+Goldman看好软件板块。5/11财报前安全。" },
+  { sym: "ONDS", type: "Long Call", legs: "Buy 10C 7/17", entry: "$0.50-$0.80", target: "$2.00+ / +150%", stop: "股价跌破$8平仓", maxRisk: "~$70/手 (低成本)", hold: "4-8周", conf: 5, reason: "10C V/OI=11.56高→异常买入兴趣。分析师目标$19.83 vs 当前$9.13。World View收购+以色列合同催化。小仓位高赔率投机。" },
+];
+
+const top3 = [
+  { rank: 1, sym: "GOOGL", strategy: "Bull Call Spread 330/345C 5/15", conf: 8, reason: "最强主动买入信号(V/OI=9.78) + 财报催化 + 大盘风险偏好回升" },
+  { rank: 2, sym: "META", strategy: "Long 625C 4/24", conf: 7, reason: "AI模型发布+广告增长双催化 + 短期高Gamma + 盘中已涨4%" },
+  { rank: 3, sym: "MRVL", strategy: "Bear Call Credit 140/150C 6/18", conf: 7, reason: "月涨50%后大规模卖Call获利了结 → 高概率回调 → 信用价差吃时间" },
+];
+
+function BarMini({ bull, bear }) {
+  const b = parseFloat(bull.replace(/[^0-9.]/g, ""));
+  const s = parseFloat(bear.replace(/[^0-9.]/g, ""));
+  const total = b + s || 1;
+  const bp = (b / total) * 100;
+  return (
+    <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden", background: COLORS.redDim, width: "100%" }}>
+      <div style={{ width: `${bp}%`, background: COLORS.green, borderRadius: "4px 0 0 4px" }} />
+    </div>
+  );
+}
+
+function MacroBar() {
+  const items = [
+    { label: "SPX", val: macroData.spx.val, chg: macroData.spx.chg, up: true },
+    { label: "QQQ", val: macroData.qqq.val, chg: macroData.qqq.chg, up: true },
+    { label: "VIX", val: macroData.vix.val, chg: macroData.vix.chg, up: false },
+    { label: "WTI Oil", val: macroData.oil.val, chg: macroData.oil.chg, up: false },
+    { label: "Gold", val: macroData.gold.val, chg: macroData.gold.chg, up: false },
+  ];
+  return (
+    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 8 }}>
+      {items.map((it) => (
+        <div key={it.label} style={{ padding: "6px 14px", background: COLORS.cardAlt, borderRadius: 8, border: `1px solid ${COLORS.border}`, minWidth: 120 }}>
+          <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 2 }}>{it.label}</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: COLORS.text }}>{it.val}</div>
+          <div style={{ fontSize: 12, color: it.up ? COLORS.green : COLORS.red, fontWeight: 600 }}>{it.chg}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TickerCard({ t }) {
+  const sigColor = t.signal.includes("🟢") ? COLORS.green : t.signal.includes("🔴") ? COLORS.red : t.signal.includes("🟠") ? COLORS.orange : t.signal.includes("🟡") ? COLORS.yellow : COLORS.textMuted;
+  return (
+    <div style={{ background: COLORS.card, border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 18, marginBottom: 14, borderLeft: `4px solid ${sigColor}` }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, flexWrap: "wrap", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <span style={{ fontSize: 22, fontWeight: 800, color: COLORS.text }}>{t.sym}</span>
+          <span style={{ fontSize: 13, color: COLORS.textMuted }}>{t.price}</span>
+          <span style={{ fontSize: 14, padding: "2px 10px", borderRadius: 20, background: sigColor + "22", color: sigColor, fontWeight: 700 }}>{t.signal} {t.label}</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 12, color: COLORS.textMuted }}>置信度</span>
+          <span style={{ fontSize: 20, fontWeight: 800, color: sigColor }}>{t.confidence}</span>
+          <span style={{ fontSize: 12, color: COLORS.textMuted }}>/10</span>
+          <span style={{ fontSize: 12, color: COLORS.textMuted, marginLeft: 8 }}>总额 {t.total}</span>
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: 16, marginBottom: 10, alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ fontSize: 12 }}>
+          <span style={{ color: COLORS.green, fontWeight: 700 }}>看多 {t.netBull}</span>
+          <span style={{ color: COLORS.textMuted, margin: "0 6px" }}>vs</span>
+          <span style={{ color: COLORS.red, fontWeight: 700 }}>看空 {t.netBear}</span>
+        </div>
+        <div style={{ flex: 1, minWidth: 100, maxWidth: 200 }}><BarMini bull={t.netBull} bear={t.netBear} /></div>
+      </div>
+      <div style={{ overflowX: "auto", marginBottom: 10 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+              {["合约", "到期", "DTE", "方向", "主动", "金额", "V/OI"].map((h) => (
+                <th key={h} style={{ padding: "4px 8px", color: COLORS.textMuted, fontWeight: 600, textAlign: "left", whiteSpace: "nowrap" }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {t.topContracts.map((c, i) => {
+              const dc = c.dir.includes("🟢") ? COLORS.green : c.dir.includes("🔴") ? COLORS.red : c.dir.includes("🟡") ? COLORS.yellow : COLORS.textMuted;
+              return (
+                <tr key={i} style={{ borderBottom: `1px solid ${COLORS.border}20` }}>
+                  <td style={{ padding: "4px 8px", color: COLORS.text, fontWeight: 700 }}>{c.strike}</td>
+                  <td style={{ padding: "4px 8px", color: COLORS.textMuted }}>{c.exp}</td>
+                  <td style={{ padding: "4px 8px", color: COLORS.textMuted }}>{c.dte}d</td>
+                  <td style={{ padding: "4px 8px", color: dc, fontWeight: 600 }}>{c.dir}</td>
+                  <td style={{ padding: "4px 8px", color: c.active === "买入" ? COLORS.green : c.active === "卖出" ? COLORS.red : COLORS.yellow }}>{c.active}</td>
+                  <td style={{ padding: "4px 8px", color: COLORS.text, fontWeight: 700 }}>{c.vol}</td>
+                  <td style={{ padding: "4px 8px", color: parseFloat(c.voi) > 5 ? COLORS.yellow : COLORS.textMuted, fontWeight: parseFloat(c.voi) > 5 ? 700 : 400 }}>{c.voi}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ fontSize: 12, color: COLORS.text, lineHeight: 1.6, marginBottom: 4 }}>
+        <span style={{ color: COLORS.blue, fontWeight: 700 }}>动机解读：</span>{t.reason}
+      </div>
+      <div style={{ fontSize: 12, color: COLORS.text, lineHeight: 1.6 }}>
+        <span style={{ color: COLORS.purple, fontWeight: 700 }}>催化剂关联：</span>{t.catalyst}
+      </div>
+    </div>
+  );
+}
+
+function StrategyTable() {
+  return (
+    <div style={{ overflowX: "auto" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+        <thead>
+          <tr style={{ background: COLORS.stratBg, borderBottom: `2px solid ${COLORS.blue}` }}>
+            {["标的", "策略", "具体腿", "入场价", "目标", "止损", "最大风险", "周期", "置信", "理由"].map((h) => (
+              <th key={h} style={{ padding: "8px 6px", color: COLORS.blue, fontWeight: 700, textAlign: "left", whiteSpace: "nowrap", fontSize: 11 }}>{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {strategies.map((s, i) => {
+            const cc = s.conf >= 7 ? COLORS.green : s.conf >= 5 ? COLORS.yellow : COLORS.textMuted;
+            return (
+              <tr key={i} style={{ borderBottom: `1px solid ${COLORS.border}40`, background: i % 2 === 0 ? COLORS.card : COLORS.cardAlt }}>
+                <td style={{ padding: "8px 6px", fontWeight: 800, color: COLORS.text, whiteSpace: "nowrap" }}>{s.sym}</td>
+                <td style={{ padding: "8px 6px", color: COLORS.purple, fontWeight: 600, whiteSpace: "nowrap" }}>{s.type}</td>
+                <td style={{ padding: "8px 6px", color: COLORS.text, fontWeight: 600, minWidth: 180 }}>{s.legs}</td>
+                <td style={{ padding: "8px 6px", color: COLORS.textMuted, whiteSpace: "nowrap" }}>{s.entry}</td>
+                <td style={{ padding: "8px 6px", color: COLORS.green, fontWeight: 600, whiteSpace: "nowrap" }}>{s.target}</td>
+                <td style={{ padding: "8px 6px", color: COLORS.red, whiteSpace: "nowrap" }}>{s.stop}</td>
+                <td style={{ padding: "8px 6px", color: COLORS.orange, whiteSpace: "nowrap" }}>{s.maxRisk}</td>
+                <td style={{ padding: "8px 6px", color: COLORS.textMuted, whiteSpace: "nowrap" }}>{s.hold}</td>
+                <td style={{ padding: "8px 6px" }}><span style={{ color: cc, fontWeight: 800, fontSize: 16 }}>{s.conf}</span></td>
+                <td style={{ padding: "8px 6px", color: COLORS.textMuted, fontSize: 11, minWidth: 200 }}>{s.reason}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Dashboard() {
+  const [tab, setTab] = useState("all");
+  return (
+    <div style={{ background: COLORS.bg, color: COLORS.text, fontFamily: "'SF Pro Display', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif", minHeight: "100vh", padding: "16px 12px" }}>
+      <div style={{ marginBottom: 16, borderBottom: `1px solid ${COLORS.border}`, paddingBottom: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 10, padding: "2px 8px", background: COLORS.blue + "22", color: COLORS.blue, borderRadius: 4, fontWeight: 700 }}>moomoo 数据源</span>
+          <span style={{ fontSize: 10, color: COLORS.textMuted }}>{macroData.date}</span>
+        </div>
+        <h1 style={{ fontSize: 22, fontWeight: 800, margin: "0 0 4px 0", letterSpacing: "-0.5px" }}>期权异动深度分析仪表盘</h1>
+        <p style={{ fontSize: 12, color: COLORS.textMuted, margin: 0 }}>覆盖: GOOGL · GLD · MRVL · TSLA · NVDA · META · PLTR · ONDS | 总异动金额 $292.2M</p>
+      </div>
+
+      <div style={{ background: COLORS.card, border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 16, marginBottom: 16 }}>
+        <h2 style={{ fontSize: 14, fontWeight: 700, color: COLORS.blue, margin: "0 0 10px 0" }}>A | 宏观背景 & 核心结论</h2>
+        <MacroBar />
+        <p style={{ fontSize: 12, color: COLORS.text, lineHeight: 1.7, margin: "10px 0 8px 0" }}>{macroData.headline}</p>
+        <div style={{ padding: "10px 14px", background: COLORS.greenDim, border: `1px solid ${COLORS.green}40`, borderRadius: 8 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: COLORS.green }}>🎯 核心结论：</span>
+          <span style={{ fontSize: 12, color: COLORS.text }}> {macroData.coreConclusion}</span>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <h2 style={{ fontSize: 14, fontWeight: 700, color: COLORS.blue, margin: "0 0 12px 0" }}>B | 标的异动卡片</h2>
+        <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
+          <button onClick={() => setTab("all")} style={{ padding: "4px 12px", borderRadius: 6, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600, background: tab === "all" ? COLORS.blue : COLORS.cardAlt, color: tab === "all" ? "#fff" : COLORS.textMuted }}>全部</button>
+          {["GOOGL","GLD","MRVL","TSLA","NVDA","META","PLTR","ONDS"].map(s => (
+            <button key={s} onClick={() => setTab(s)} style={{ padding: "4px 10px", borderRadius: 6, border: "none", cursor: "pointer", fontSize: 11, fontWeight: 600, background: tab === s ? COLORS.blue : COLORS.cardAlt, color: tab === s ? "#fff" : COLORS.textMuted }}>{s}</button>
+          ))}
+        </div>
+        {tickers.filter(t => tab === "all" || t.sym === tab).map(t => <TickerCard key={t.sym} t={t} />)}
+      </div>
+
+      <div style={{ background: COLORS.stratBg, border: `2px solid ${COLORS.stratBorder}`, borderRadius: 12, padding: 16, marginBottom: 16 }}>
+        <h2 style={{ fontSize: 14, fontWeight: 700, color: COLORS.yellow, margin: "0 0 4px 0" }}>C | 交易策略建议表 ⚡</h2>
+        <p style={{ fontSize: 11, color: COLORS.textMuted, margin: "0 0 12px 0" }}>每个标的至少1条可立即下单的策略 | 含具体行权价+到期+入场+止损+最大风险</p>
+        <StrategyTable />
+        <p style={{ fontSize: 10, color: COLORS.textMuted, margin: "10px 0 0 0", fontStyle: "italic" }}>⚠ 以上策略基于moomoo单源异动数据推断，不构成投资建议。入场前请结合实时盘口、IV水平、自身风险承受能力综合判断。</p>
+      </div>
+
+      <div style={{ background: COLORS.card, border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 16 }}>
+        <h2 style={{ fontSize: 14, fontWeight: 700, color: COLORS.blue, margin: "0 0 12px 0" }}>D | 底部总结</h2>
+        <div style={{ padding: "10px 14px", background: COLORS.cardAlt, borderRadius: 8, marginBottom: 14, border: `1px solid ${COLORS.border}` }}>
+          <p style={{ fontSize: 13, fontWeight: 700, color: COLORS.yellow, margin: 0 }}>📊 今日宏观判断：地缘风险升级但市场选择"看穿"→ 风险资产反弹主导，科技/AI领涨；黄金受美元走强压制转为震荡；半导体获利了结与底部承接并存。</p>
+        </div>
+        <div style={{ marginBottom: 14 }}>
+          <h3 style={{ fontSize: 13, fontWeight: 700, color: COLORS.green, margin: "0 0 8px 0" }}>🏆 明日 Top 3 必跟策略</h3>
+          {top3.map(t => (
+            <div key={t.rank} style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 8, padding: "8px 12px", background: COLORS.cardAlt, borderRadius: 8, border: `1px solid ${COLORS.border}` }}>
+              <span style={{ fontSize: 18, fontWeight: 800, color: COLORS.yellow, minWidth: 24 }}>#{t.rank}</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: COLORS.text }}>
+                  <span style={{ color: COLORS.blue }}>{t.sym}</span> — {t.strategy}
+                  <span style={{ marginLeft: 8, padding: "1px 8px", borderRadius: 4, fontSize: 11, background: t.conf >= 7 ? COLORS.greenDim : COLORS.yellowDim, color: t.conf >= 7 ? COLORS.green : COLORS.yellow, fontWeight: 700 }}>置信度 {t.conf}/10</span>
+                </div>
+                <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>{t.reason}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ padding: "10px 14px", background: COLORS.redDim, borderRadius: 8, border: `1px solid ${COLORS.red}30` }}>
+          <h3 style={{ fontSize: 12, fontWeight: 700, color: COLORS.red, margin: "0 0 6px 0" }}>⚠ 风险提示</h3>
+          <div style={{ fontSize: 11, color: COLORS.text, lineHeight: 1.7 }}>
+            <p style={{ margin: "0 0 4px 0" }}><strong style={{ color: COLORS.red }}>黑天鹅风险：</strong>霍尔木兹海峡封锁升级 → 油价冲$120+ → 全面风险规避模式。</p>
+            <p style={{ margin: "0 0 4px 0" }}><strong style={{ color: COLORS.orange }}>仓位管理：</strong>单策略仓位不超过总资金5%；高置信度策略可适当加仓至8%。</p>
+            <p style={{ margin: "0 0 4px 0" }}><strong style={{ color: COLORS.yellow }}>止损纪律：</strong>所有策略均设有明确止损线，触发即执行。</p>
+            <p style={{ margin: 0 }}><strong style={{ color: COLORS.textMuted }}>数据局限：</strong>moomoo单源数据不含IV Rank、Smart Money指标、开平仓识别。</p>
+          </div>
+        </div>
+        <div style={{ marginTop: 14 }}>
+          <h3 style={{ fontSize: 12, fontWeight: 700, color: COLORS.purple, margin: "0 0 8px 0" }}>🔗 板块联动判断</h3>
+          <div style={{ fontSize: 11, color: COLORS.text, lineHeight: 1.7 }}>
+            <p style={{ margin: "0 0 4px 0" }}><strong>Mag7/科技：</strong>GOOGL+META看多主导 + PLTR受益软件板块轮动 → AI叙事回暖。</p>
+            <p style={{ margin: "0 0 4px 0" }}><strong>半导体：</strong>MRVL获利了结 vs NVDA对冲→ 板块短期承压但中期AI基建逻辑未变。</p>
+            <p style={{ margin: "0 0 4px 0" }}><strong>避险/商品：</strong>GLD多空并存→ 黄金$4,600-$4,800区间震荡。</p>
+            <p style={{ margin: 0 }}><strong>国防/航天：</strong>ONDS小盘异动→ 地缘紧张利好自主系统/无人机板块。</p>
+          </div>
+        </div>
+      </div>
+      <div style={{ textAlign: "center", padding: "16px 0 8px 0", fontSize: 10, color: COLORS.textMuted }}>
+        moomoo 异动期权分析仪表盘 · {macroData.date} · 仅供研究参考，不构成投资建议
+      </div>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Dashboard />);
+  </script>
+</body>
+</html>

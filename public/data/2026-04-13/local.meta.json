@@ -1,0 +1,21 @@
+{
+  "title": "本地异动追踪系统分析",
+  "date": "2026-04-13",
+  "source": "local",
+  "totalFlow": "$187.5M",
+  "tickers": ["AAPL", "GOOGL", "TSLA", "NVDA", "AMD", "MRVL"],
+  "macro": "自研系统捕获6只标的异动信号，AAPL大单Sweep信号最强，GOOGL与moomoo交叉验证",
+  "strategies": [
+    { "sym": "AAPL", "signal": "bullish", "conf": 9, "strategy": "Sweep买入 195C 5/15", "target": "+90%", "risk": "~$800/手" },
+    { "sym": "GOOGL", "signal": "bullish", "conf": 8, "strategy": "连续大单 335C 5/15", "target": "+120%", "risk": "~$650/手" },
+    { "sym": "TSLA", "signal": "neutral", "conf": 4, "strategy": "结构化对冲信号", "target": "N/A", "risk": "N/A" },
+    { "sym": "NVDA", "signal": "bearish", "conf": 6, "strategy": "卖Call信号 190C 5/8", "target": "+30%", "risk": "~$500/手" },
+    { "sym": "AMD", "signal": "bullish", "conf": 7, "strategy": "异常Call量 165C 4/18", "target": "+75%", "risk": "~$400/手" },
+    { "sym": "MRVL", "signal": "bearish", "conf": 7, "strategy": "获利了结信号 110C 6/18", "target": "+35%", "risk": "~$600/手" }
+  ],
+  "top3": [
+    { "rank": 1, "sym": "AAPL", "strategy": "Sweep买入 195C 5/15", "conf": 9 },
+    { "rank": 2, "sym": "GOOGL", "strategy": "连续大单 335C 5/15", "conf": 8 },
+    { "rank": 3, "sym": "AMD", "strategy": "异常Call量 165C 4/18", "conf": 7 }
+  ]
+}
