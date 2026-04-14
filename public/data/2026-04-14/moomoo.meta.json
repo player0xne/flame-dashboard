@@ -1,22 +1,25 @@
 {
-  "title": "Moomoo 异动期权深度分析",
+  "title": "moomoo异动深度分析",
   "date": "2026-04-14",
   "source": "moomoo",
-  "totalFlow": "$245.8M",
-  "tickers": ["AAPL", "AMZN", "TSLA", "SPY", "NVDA", "COIN", "PLTR"],
-  "macro": "油价回落3%缓解恐慌，SPX续涨+0.6%，AAPL财报前Call量激增，COIN随BTC突破$95K暴涨",
+  "totalFlow": "$509.3M",
+  "tickers": ["NVDA", "GLD", "TSLA", "META", "GOOGL", "PLTR", "MRVL", "PL", "ONDS", "RKLB"],
+  "macro": "Risk-On加速(VIX -5%, 油-2.7%)→SPX逼近新高。NVDA $217M焦点(180C $66M卖 vs 200C $66M买)。GOOGL收$333突破330C→看多验证。META收$662突破卖压区",
   "strategies": [
-    { "sym": "AAPL", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread 200/215C 5/15", "target": "+110%", "risk": "~$700/手" },
-    { "sym": "AMZN", "signal": "bullish", "conf": 7, "strategy": "Long 195C 5/8", "target": "+80%", "risk": "~$900/手" },
-    { "sym": "TSLA", "signal": "bearish", "conf": 6, "strategy": "Bear Put Spread 330/310P 4/25", "target": "+60%", "risk": "~$800/手" },
-    { "sym": "SPY", "signal": "neutral", "conf": 5, "strategy": "Iron Condor 540/560P-580/600C", "target": "+40%", "risk": "~$1200/手" },
-    { "sym": "NVDA", "signal": "bullish", "conf": 7, "strategy": "Bull Call 185/200C 5/15", "target": "+95%", "risk": "~$650/手" },
-    { "sym": "COIN", "signal": "bullish", "conf": 6, "strategy": "Long 280C 5/15", "target": "+120%", "risk": "~$500/手" },
-    { "sym": "PLTR", "signal": "bullish", "conf": 5, "strategy": "Bull Put Credit 125/115P", "target": "+25%", "risk": "~$700/手" }
+    { "sym": "NVDA", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread 197C/210C 5/29", "target": "+120%", "risk": "$600/手" },
+    { "sym": "GOOGL", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread 335C/355C 5/15", "target": "+150%", "risk": "$800/手" },
+    { "sym": "TSLA", "signal": "bullish", "conf": 6, "strategy": "Bull Call Spread 375C/400C 5/15", "target": "+150%", "risk": "$1000/手" },
+    { "sym": "GLD", "signal": "bearish", "conf": 6, "strategy": "Bear Call Credit 465C/475C 5/15", "target": "+25%", "risk": "$700/手" },
+    { "sym": "MRVL", "signal": "bullish", "conf": 6, "strategy": "Bull Put Credit 125P/115P 6/18", "target": "+25%", "risk": "$700/手" },
+    { "sym": "META", "signal": "bearish", "conf": 5, "strategy": "Bear Call Credit 685C/700C 6/18", "target": "+25%", "risk": "$1000/手" },
+    { "sym": "PLTR", "signal": "neutral", "conf": 5, "strategy": "Iron Condor 120P-155C 6/18", "target": "+30-40%", "risk": "$600/手" },
+    { "sym": "ONDS", "signal": "bullish", "conf": 5, "strategy": "Long 10C 6/18", "target": "+150%", "risk": "$70/手" },
+    { "sym": "RKLB", "signal": "bearish", "conf": 4, "strategy": "Protective Put 70P 5/15", "target": "保护至$70", "risk": "$300/手" },
+    { "sym": "PL", "signal": "bullish", "conf": 3, "strategy": "Bull Call Spread 34C/38C 5/15", "target": "+170%", "risk": "$150/手" }
   ],
   "top3": [
-    { "rank": 1, "sym": "AAPL", "strategy": "Bull Call Spread 200/215C 5/15", "conf": 8 },
-    { "rank": 2, "sym": "NVDA", "strategy": "Bull Call 185/200C 5/15", "conf": 7 },
-    { "rank": 3, "sym": "AMZN", "strategy": "Long 195C 5/8", "conf": 7 }
+    { "rank": 1, "sym": "NVDA", "strategy": "Bull Call Spread 197C/210C 5/29 (200C $66M V/OI=36年度信号+$196收盘仅差$200 1.8%)", "conf": 8 },
+    { "rank": 2, "sym": "GOOGL", "strategy": "Bull Call Spread 335C/355C 5/15 ($333突破330C看多验证+4/29财报)", "conf": 8 },
+    { "rank": 3, "sym": "TSLA", "strategy": "Bull Call Spread 375C/400C 5/15 ($365动能强+395C/440C买入，⚠4/22财报)", "conf": 6 }
   ]
 }
