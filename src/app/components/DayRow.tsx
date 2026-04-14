@@ -10,7 +10,7 @@ const META_KEYS = {
 
 export default function DayRow({ day }: { day: DayAnalysis }) {
   const hasAny = day.moomoo || day.local || day.compare;
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
   const isToday = day.date === today;
 
   return (

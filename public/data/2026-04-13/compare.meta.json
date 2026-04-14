@@ -1,21 +1,23 @@
 {
-  "title": "两系统对比分析",
+  "title": "双源期权异动深度分析",
   "date": "2026-04-13",
   "source": "compare",
-  "totalFlow": "$292.2M + $187.5M",
-  "tickers": ["GOOGL", "MRVL", "NVDA", "TSLA", "AAPL", "META"],
-  "macro": "GOOGL/MRVL两系统一致看涨/看跌，AAPL仅本地捕获，META仅moomoo捕获，验证互补价值",
+  "totalFlow": "$292.2M + $427.3M",
+  "tickers": ["GOOGL", "META", "NVDA", "TSLA", "GLD", "MRVL", "ONDS", "PLTR"],
+  "macro": "META双源共振+空头全面回补为今日最强信号；GOOGL双源同向但平仓较重；NVDA双源分歧大规模仓位清洗；TSLA多空调仓等待方向",
   "strategies": [
-    { "sym": "GOOGL", "signal": "bullish", "conf": 9, "strategy": "双系统一致看涨 335C", "target": "+130%", "risk": "~$600/手" },
-    { "sym": "MRVL", "signal": "bearish", "conf": 8, "strategy": "双系统一致看跌 卖Call", "target": "+35%", "risk": "~$650/手" },
-    { "sym": "AAPL", "signal": "bullish", "conf": 7, "strategy": "仅本地捕获 Sweep信号", "target": "+90%", "risk": "~$800/手" },
-    { "sym": "NVDA", "signal": "bearish", "conf": 7, "strategy": "双系统一致对冲格局", "target": "保护持仓", "risk": "零成本" },
-    { "sym": "TSLA", "signal": "neutral", "conf": 4, "strategy": "两系统均为结构化交易", "target": "N/A", "risk": "N/A" },
-    { "sym": "META", "signal": "bullish", "conf": 6, "strategy": "仅moomoo捕获 625C", "target": "+60%", "risk": "~$1000/手" }
+    { "sym": "META", "signal": "bullish", "conf": 8, "strategy": "双源共振+空头回补 → 630-640C Bull Spread 4/24", "target": "$640-650", "risk": "净权利金" },
+    { "sym": "GOOGL", "signal": "bullish", "conf": 7, "strategy": "双源同向看多 → 335C 5/15 跟踪$20.7M大单", "target": "$335", "risk": "~$600/手" },
+    { "sym": "ONDS", "signal": "bullish", "conf": 6, "strategy": "80%覆盖率双源共振 → 近月ATM Call", "target": "N/A", "risk": "小盘高波动" },
+    { "sym": "NVDA", "signal": "neutral", "conf": 5, "strategy": "双源分歧 大规模平仓 → 观望", "target": "N/A", "risk": "N/A" },
+    { "sym": "GLD", "signal": "bullish", "conf": 5, "strategy": "仅moomoo $22M+机构布局 → 单源待验证", "target": "$465-485", "risk": "单源降级" },
+    { "sym": "TSLA", "signal": "neutral", "conf": 4, "strategy": "双方调仓 $350锚定位 → 卖Put收premium", "target": "$350支撑", "risk": "伊朗局势" },
+    { "sym": "MRVL", "signal": "bearish", "conf": 4, "strategy": "仅moomoo -$21M偏空 → 不追涨等回调", "target": "$115-120", "risk": "涨40%后对冲" },
+    { "sym": "PLTR", "signal": "neutral", "conf": 3, "strategy": "信号不足 → 不做交易建议", "target": "N/A", "risk": "N/A" }
   ],
   "top3": [
-    { "rank": 1, "sym": "GOOGL", "strategy": "双系统一致看涨 → Bull Call Spread 330/345C", "conf": 9 },
-    { "rank": 2, "sym": "MRVL", "strategy": "双系统一致看跌 → Bear Call Credit 140/150C", "conf": 8 },
-    { "rank": 3, "sym": "AAPL", "strategy": "本地独有Sweep → Long 195C 5/15", "conf": 7 }
+    { "rank": 1, "sym": "META", "strategy": "双源共振+空头全面回补 → 4/24 630-640C Bull Spread (置信8)", "conf": 8 },
+    { "rank": 2, "sym": "GOOGL", "strategy": "双源同向+$20.7M新仓 → 5/15 335C (置信6)", "conf": 7 },
+    { "rank": 3, "sym": "ONDS", "strategy": "80%覆盖率双源共振 → 近月ATM Call (置信5)", "conf": 6 }
   ]
 }

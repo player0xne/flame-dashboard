@@ -2,9 +2,9 @@ import Link from "next/link";
 import { AnalysisType, AnalysisMeta, getAnalysisLabel } from "@/lib/dates";
 
 const TYPE_COLORS: Record<AnalysisType, string> = {
-  moomoo: "border-accent text-accent",
-  local: "border-accent-2 text-accent-2",
-  compare: "border-accent-3 text-accent-3",
+  moomoo: "text-accent",
+  local: "text-accent-2",
+  compare: "text-accent-3",
 };
 
 const TYPE_BG: Record<AnalysisType, string> = {
@@ -56,10 +56,10 @@ export default function AnalysisCard({
     return (
       <Link href={`/analysis/${date}/${type}`} className="block">
         <div
-          className={`rounded-xl border-2 ${colorClass} ${bgClass} p-3 hover:scale-[1.01] transition-transform cursor-pointer relative overflow-hidden`}
+          className={`rounded-xl border border-card-border ${bgClass} p-3 hover:scale-[1.01] transition-transform cursor-pointer relative overflow-hidden`}
         >
-          {/* Top color stripe */}
-          <div className={`absolute top-0 left-0 right-0 h-1 ${icon.stripe}`} />
+          {/* Left color stripe */}
+          <div className={`absolute top-0 left-0 bottom-0 w-1 ${icon.stripe}`} />
 
           {/* Header with source badge */}
           <div className="flex items-center justify-between mb-2 mt-1">
@@ -137,9 +137,9 @@ export default function AnalysisCard({
   return (
     <Link href={`/analysis/${date}/${type}`} className="block">
       <div
-        className={`rounded-xl border-2 ${colorClass} ${bgClass} p-4 flex flex-col items-center justify-center min-h-[120px] hover:scale-[1.02] transition-transform cursor-pointer relative overflow-hidden`}
+        className={`rounded-xl border border-card-border ${bgClass} p-4 flex flex-col items-center justify-center min-h-[120px] hover:scale-[1.02] transition-transform cursor-pointer relative overflow-hidden`}
       >
-        <div className={`absolute top-0 left-0 right-0 h-1 ${icon.stripe}`} />
+        <div className={`absolute top-0 left-0 bottom-0 w-1 ${icon.stripe}`} />
         <span className={`${icon.tagBg} ${icon.tagText} text-sm font-black px-2 py-0.5 rounded mb-2`}>
           {icon.icon}
         </span>
