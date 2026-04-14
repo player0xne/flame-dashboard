@@ -1,21 +1,22 @@
 {
-  "title": "两系统对比分析",
+  "title": "双源期权异动深度分析",
   "date": "2026-04-14",
   "source": "compare",
-  "totalFlow": "$245.8M + $156.3M",
-  "tickers": ["AAPL", "NVDA", "TSLA", "COIN", "AMZN", "MSFT"],
-  "macro": "AAPL/NVDA双系统强共振看涨，TSLA分歧（moomoo看跌vs本地看跌一致），AMZN仅moomoo、MSFT仅本地",
+  "totalFlow": "moomoo $509.3M × 系统",
+  "tickers": ["NVDA", "GOOGL", "META", "TSLA", "ONDS", "RKLB"],
+  "macro": "Nasdaq十连阳+全线突破：NVDA $196.45双源一致看多$200+，GOOGL $332.84突破$330双源同向看多，META $662.30击穿机构$650卖Call防线(gamma squeeze风险)，TSLA双源分歧持续",
   "strategies": [
-    { "sym": "AAPL", "signal": "bullish", "conf": 9, "strategy": "双系统最强共振 → Bull Call 200/215C", "target": "+110%", "risk": "~$700/手" },
-    { "sym": "NVDA", "signal": "bullish", "conf": 8, "strategy": "双系统反转共振 → Bull Call 185/200C", "target": "+95%", "risk": "~$650/手" },
-    { "sym": "TSLA", "signal": "bearish", "conf": 7, "strategy": "双系统一致看跌 → Bear Put 330/310P", "target": "+60%", "risk": "~$800/手" },
-    { "sym": "COIN", "signal": "bullish", "conf": 6, "strategy": "双系统一致看涨 → Long 280C", "target": "+100%", "risk": "~$500/手" },
-    { "sym": "AMZN", "signal": "bullish", "conf": 5, "strategy": "仅moomoo捕获 195C", "target": "+80%", "risk": "~$900/手" },
-    { "sym": "MSFT", "signal": "bullish", "conf": 5, "strategy": "仅本地捕获 420C", "target": "+50%", "risk": "~$900/手" }
+    { "sym": "NVDA", "signal": "bullish", "conf": 8, "strategy": "Bull Call Spread 200C/215C 5/15", "target": "$15 max", "risk": "$520/spread" },
+    { "sym": "GOOGL", "signal": "bullish", "conf": 7, "strategy": "Bull Call Spread 335C/350C 5/15", "target": "$15 max", "risk": "$550/spread" },
+    { "sym": "GOOGL", "signal": "bullish", "conf": 6, "strategy": "Short Put 320P 5/15", "target": "到期归零", "risk": "$31,680/合约" },
+    { "sym": "META", "signal": "neutral", "conf": 5, "strategy": "小仓Long 670C 5/15 (gamma squeeze博弈)", "target": "$35+", "risk": "$1,850/合约" },
+    { "sym": "ONDS", "signal": "bullish", "conf": 5, "strategy": "Long Call 10C 5/15", "target": "$2+", "risk": "$65/合约" },
+    { "sym": "TSLA", "signal": "neutral", "conf": 4, "strategy": "Iron Condor 350P-380C 4/17", "target": "区间到期", "risk": "$320/spread" },
+    { "sym": "RKLB", "signal": "bullish", "conf": 4, "strategy": "Long Call 75C 5/15", "target": "$13+", "risk": "$680/合约" }
   ],
   "top3": [
-    { "rank": 1, "sym": "AAPL", "strategy": "双系统最强共振 → Bull Call 200/215C 5/15", "conf": 9 },
-    { "rank": 2, "sym": "NVDA", "strategy": "双系统反转共振 → Bull Call 185/200C 5/15", "conf": 8 },
-    { "rank": 3, "sym": "TSLA", "strategy": "双系统一致看跌 → Bear Put 330/310P 4/25", "conf": 7 }
+    { "rank": 1, "sym": "NVDA", "strategy": "Bull Spread 200/215C 5/15 ($196.45距$200仅1.8%+双源一致+$66M新仓→$200)", "conf": 8 },
+    { "rank": 2, "sym": "GOOGL", "strategy": "Bull Spread 335/350C 5/15 ($332.84突破$330+$49M空头投降)", "conf": 7 },
+    { "rank": 3, "sym": "META", "strategy": "小仓Long 670C 5/15 ($662.30击穿$650防线→gamma squeeze可能，双源偏空需谨慎)", "conf": 5 }
   ]
 }

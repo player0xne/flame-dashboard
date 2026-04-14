@@ -1,65 +1,344 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>两系统对比 - 2026-04-14</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'SF Pro Display','Noto Sans SC',-apple-system,sans-serif;background:#0f1419;color:#e8edf3;padding:16px 12px;min-height:100vh}
-h1{font-size:22px;font-weight:800;margin-bottom:4px}
-.subtitle{font-size:12px;color:#8899aa;margin-bottom:16px}
-.tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700;display:inline-block;margin-bottom:8px}
-.card{background:#1a2332;border:1px solid #2a3a4e;border-radius:12px;padding:16px;margin-bottom:14px}
-.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
-.sym{font-size:22px;font-weight:800}
-.signal{font-size:14px;padding:2px 10px;border-radius:20px;font-weight:700}
-table{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0}
-th{padding:4px 8px;color:#8899aa;font-weight:600;text-align:left;border-bottom:1px solid #2a3a4e}
-td{padding:4px 8px;border-bottom:1px solid #2a3a4e20}
-.green{color:#00d26a}.red{color:#ff4757}.yellow{color:#ffc048}.blue{color:#4da6ff}.purple{color:#a78bfa}.muted{color:#8899aa}
-.macro{background:#1a2332;border:1px solid #2a3a4e;border-radius:12px;padding:16px;margin-bottom:16px}
-.conclusion{padding:10px 14px;background:#0a3d2a;border:1px solid #00d26a40;border-radius:8px;margin-top:10px}
-.strat-box{background:#0d2137;border:2px solid #1a4060;border-radius:12px;padding:16px;margin-bottom:16px}
-.footer{text-align:center;padding:16px 0 8px;font-size:10px;color:#8899aa}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>双源期权异动深度分析 2026-04-14</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>body{margin:0;background:#0f1419}</style>
 </head>
 <body>
-<div style="margin-bottom:16px;border-bottom:1px solid #2a3a4e;padding-bottom:16px">
-<span class="tag" style="background:#10b98122;color:#10b981">两系统对比</span>
-<span style="font-size:10px;color:#8899aa;margin-left:8px">2026-04-14</span>
-<h1>期权异动分析仪表盘</h1>
-<p class="subtitle">占位示例数据 · 实际使用时替换为AI生成的完整分析</p>
-</div>
+  <div id="root"></div>
+  <script type="text/babel">
+const { useState } = React;
 
-<div class="macro">
-<h2 style="font-size:14px;font-weight:700;color:#4da6ff;margin-bottom:10px">宏观背景</h2>
-<p style="font-size:12px;line-height:1.7">这是 2026-04-14 的 两系统对比 占位页面。实际使用时，这里会展示完整的AI生成分析内容，包括宏观数据、标的异动卡片、交易策略表和总结。</p>
-<div class="conclusion">
-<span style="font-size:12px;font-weight:700;color:#00d26a">🎯 核心结论：</span>
-<span style="font-size:12px">占位内容 - 将由AI分析替换</span>
-</div>
-</div>
+const C = {
+  bg: "#0f1419", card: "#1a2332", cardAlt: "#16202e", border: "#2a3a4e",
+  text: "#e8edf3", muted: "#8899aa",
+  green: "#00d26a", greenDim: "#0a3d2a", red: "#ff4757", redDim: "#3d1520",
+  yellow: "#ffc048", yellowDim: "#3d3015", orange: "#ff7b42",
+  blue: "#4da6ff", purple: "#a78bfa", stratBg: "#0d2137", stratBorder: "#1a4060",
+};
 
-<div class="card" style="border-left:4px solid #00d26a">
-<div class="card-header">
-<div style="display:flex;align-items:center;gap:10px">
-<span class="sym">SAMPLE</span>
-<span class="signal" style="background:#00d26a22;color:#00d26a">🟢 示例看涨</span>
-</div>
-<span class="muted" style="font-size:12px">置信度 8/10</span>
-</div>
-<table>
-<tr><th>合约</th><th>到期</th><th>方向</th><th>金额</th><th>V/OI</th></tr>
-<tr><td style="font-weight:700">335C</td><td class="muted">5/15</td><td class="green" style="font-weight:600">🟢看多</td><td style="font-weight:700">$20.66M</td><td class="yellow" style="font-weight:700">9.78</td></tr>
-<tr><td style="font-weight:700">340C</td><td class="muted">6/18</td><td class="yellow" style="font-weight:600">🟡混合</td><td style="font-weight:700">$20.92M</td><td class="muted">0.92</td></tr>
-</table>
-</div>
+const B = ({ color, children }) => (
+  <span style={{ background: color + "22", color, padding: "2px 7px", borderRadius: 3, fontSize: 10, fontWeight: 600, whiteSpace: "nowrap" }}>{children}</span>
+);
 
-<div class="strat-box">
-<h2 style="font-size:14px;font-weight:700;color:#ffc048;margin-bottom:12px">交易策略建议 ⚡</h2>
-<p style="font-size:11px;color:#8899aa">占位内容 - 实际使用时展示完整策略表</p>
-</div>
+const Meter = ({ v }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+    <div style={{ display: "flex", gap: 1 }}>{Array.from({ length: 10 }, (_, i) => (
+      <div key={i} style={{ width: 5, height: 12, borderRadius: 1, background: i < v ? (v >= 7 ? C.green : v >= 4 ? C.yellow : C.red) : C.border }} />
+    ))}</div>
+    <span style={{ fontSize: 11, fontWeight: 700, color: C.text }}>{v}/10</span>
+  </div>
+);
 
-<div class="footer">两系统对比 · 2026-04-14 · 仅供研究参考，不构成投资建议</div>
+const Dir = ({ m, s, agree }) => (
+  <div style={{ fontSize: 10 }}>
+    {[["moo", m], ["sys", s]].map(([l, v]) => (
+      <div key={l} style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 2 }}>
+        <span style={{ color: C.muted, minWidth: 22 }}>{l}</span>
+        <div style={{ flex: 1, height: 5, borderRadius: 3, background: C.border, overflow: "hidden" }}>
+          <div style={{ width: `${Math.min(Math.abs(v) / (Math.abs(m) + Math.abs(s) || 1) * 100, 100)}%`, height: "100%", background: v >= 0 ? C.green : C.red }} />
+        </div>
+        <span style={{ color: v >= 0 ? C.green : C.red, fontWeight: 600, minWidth: 48, textAlign: "right" }}>{v >= 0 ? "+" : ""}{v.toFixed(1)}M</span>
+      </div>
+    ))}
+    <div style={{ textAlign: "right", marginTop: 2 }}>{agree ? <B color={C.green}>✅同向</B> : <B color={C.red}>❌分歧</B>}</div>
+  </div>
+);
+
+const CC = ({ c }) => (
+  <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 5, padding: "7px 10px", marginBottom: 4, fontSize: 11 }}>
+    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+      <span style={{ fontWeight: 700, color: C.text, fontFamily: "monospace" }}>{c.name}</span>
+      <span style={{ color: C.yellow, fontWeight: 700 }}>{c.amt}</span>
+    </div>
+    <div style={{ display: "flex", gap: 3, flexWrap: "wrap", marginBottom: 3 }}>
+      {c.tags.map((t, j) => <B key={j} color={t.includes("平仓") || t.includes("回补") || t.includes("了结") || t.includes("bearish") ? C.orange : t.includes("bullish") || t.includes("看涨") || t.includes("开仓") || t.includes("新仓") ? C.green : t.includes("V/OI") || t.includes("!") ? C.red : C.muted}>{t}</B>)}
+    </div>
+    <div style={{ color: C.muted, lineHeight: 1.5 }}>{c.analysis}</div>
+  </div>
+);
+
+const tickers = [
+  {
+    t: "NVDA", icon: "🟡", price: "$196.45", conf: 8, cov: 38, mN: 16.9, sN: 18.1, agree: true, bc: C.yellow,
+    cat: "NVDA收盘$196.45，突破$195阻力区间收于日高附近；$20亿投资Marvell持续发酵；Nasdaq十连阳；Goldman称软件股抛售过度→半导体溢出效应",
+    mot: "双源高度一致看多（moo+$16.9M / sys+$18.1M），今日方向性最强共识标的。收盘$196.45已突破系统检测到的$190-195获利了结密集区，说明卖压被新多头完全吸收。moomoo独有的$130M+大额新建仓（180C/200C/210C多腿策略）目标$200+，收盘价$196.45距$200仅差1.8%，这些仓位已接近盈利区。共振合约190C/190P平仓=老仓位在$190完成交接。",
+    res: [
+      { name: "190C 5/15", amt: "$2.8M", tags: ["平仓", "bearish sell", "深度ITM"], analysis: "190C在收盘$196.45时已深度ITM（+3.4%）。系统与moomoo一致标卖出=前期建仓者在$196获利平仓。这些190C持有者赚到了$6.45/股涨幅后选择离场。" },
+      { name: "190P 5/15", amt: "$4.7M", tags: ["空头回补", "OTM"], analysis: "190P在$196.45时已OTM 3.3%。买入平仓Put=空头回补。空方在NVDA强势突破$195后认输撤退。温和利多。" },
+      { name: "190C 4/15", amt: "$2.3M", tags: ["平仓", "DTE=1", "V/OI=2.04"], analysis: "明日到期190C在$196.45时ITM $6.45。V/OI=2.04但系统识别closing=当日gamma scalp获利平仓。" },
+      { name: "195P 4/24", amt: "$3.3M", tags: ["偏多(卖Put)", "SM=C(43)"], analysis: "系统标opening+偏多=卖出Put开仓。行权$195 vs 收盘$196.45=仅OTM 0.7%——接近ATM的卖Put说明机构认为$195是新的强支撑位。" },
+    ],
+    onlyM: [
+      { name: "180C 6/18", amt: "$65.8M", tags: ["bearish", "多腿", "深度ITM"], analysis: "巨额大单标bearish=卖出深度ITM Call。收盘$196.45 vs 行权$180=ITM $16.45（+9.1%深度ITM）。经典covered call：持有正股+卖180C收取巨额time value+intrinsic。系统漏报因多腿结构。" },
+      { name: "200C 5/29", amt: "$35.5M", tags: ["bullish", "V/OI=36!", "多腿"], analysis: "V/OI=36.33极端新仓！$35M看涨目标$200。收盘$196.45距$200仅1.8%=这些仓位已在盈利边缘，如果NVDA再涨一天就全部ITM。极强的近期方向信号。" },
+      { name: "200C 6/18", amt: "$30.4M", tags: ["bullish", "多腿", "DTE=65"], analysis: "与200C 5/29同向更远期。两个$200C合计$66M=机构对NVDA中期$200目标极度坚定。收盘$196.45已完成93%的行程。" },
+    ],
+    onlyS: [
+      { name: "192.5C 4/17", amt: "$24.1M", tags: ["获利了结", "深度ITM"], analysis: "192.5C在$196.45时ITM $3.95。$24M获利平仓=前期在$190附近建仓者在$196大幅获利后减仓。" },
+      { name: "192.5C 4/15", amt: "$23.6M", tags: ["获利了结", "深度ITM"], analysis: "明日到期同行权价获利了结$23.6M。两个192.5C合计$47.7M平仓=但注意这些是在$192.5以下建的老仓，现在$196.45已完全获利。" },
+      { name: "195C 5/15", amt: "$18.7M", tags: ["获利了结", "近ATM"], analysis: "195C在$196.45时刚过ITM $1.45。$18.7M获利=这些仓位在今天的突破中刚好变盈利就选择锁定。" },
+    ],
+    echo: "🔗 跨源呼应：moomoo $130M+新建仓(200C方向)与系统$66M+获利了结(190-195C)形成完美交接。收盘$196.45突破了获利盘密集区，说明新多头力量压倒了获利卖压。$200目标仅差1.8%，极可能短期触及。",
+  },
+  {
+    t: "GOOGL", icon: "🟡", price: "$332.84", conf: 7, cov: 47, mN: 10.3, sN: 9.4, agree: true, bc: C.yellow,
+    cat: "GOOGL收盘$332.84(+3.63%)领涨Mag7；Nasdaq十连阳AI板块全面risk-on；$332.84已突破前期$330阻力位",
+    mot: "双源完美同向看多（moo+$10.3M / sys+$9.4M）。收盘$332.84意味着320C/330C共振合约中的空头回补全部变成了深度亏损——空方被$332的突破彻底碾压。330C 4/17行权价($330)已被收盘价$332.84突破=这些空头回补是正确的逃命操作。315C/330C 5/15 获利了结也合理——$332.84相对$315/$330都已有不错利润。",
+    res: [
+      { name: "320C 4/17", amt: "$24.2M", tags: ["空头回补", "DTE=3", "深度ITM"], analysis: "320C在$332.84时深度ITM $12.84。系统$24M空头买入平仓Call=空头在到期前被迫回补巨额亏损仓位。$332.84收盘意味着这些空头每手亏$12.84。" },
+      { name: "330C 4/17", amt: "$19.3M", tags: ["空头回补", "DTE=3", "刚过ITM"], analysis: "330C在$332.84时刚过ITM $2.84。$19M空头回补=空方在$330被突破的当天紧急平仓。如果不回补，本周五到期将面临更大亏损。今日最佳逃命时机。" },
+      { name: "315C 5/15", amt: "$6.0M", tags: ["空头回补", "IVR=57%", "深度ITM"], analysis: "315C在$332.84时深度ITM $17.84。中期空头也在回补。IVR=57%较高=IV溢价丰厚但空头选择止损。跨期空头全面投降。" },
+      { name: "330C 5/15", amt: "$16.8M", tags: ["获利了结", "V/OI=0.18", "ITM"], analysis: "系统$16.8M识别为平仓卖出Call。330C在$332.84时刚ITM $2.84。前期$320以下建仓者在突破$330后获利$10+/股选择锁定。" },
+    ],
+    onlyM: [],
+    onlyS: [],
+    echo: "🔗 跨源呼应：$332.84突破$330=共振合约320C/330C/315C空头回补($49M+)被证明是正确的止损操作。但330C获利了结($16.8M)暗示$330-335区间有新的获利盘形成。下一阻力看$335-340。",
+  },
+  {
+    t: "META", icon: "🟠", price: "$662.30", conf: 6, cov: 42, mN: -41.3, sN: -3.5, agree: true, bc: C.orange,
+    cat: "META收盘$662.30(+4.41%)延续Muse Spark催化；PayPal合作提振广告；但$662.30已突破共振合约650C卖出行权价=机构卖Call的上限被突破",
+    mot: "双源同向偏空（moo-$41.3M / sys-$3.5M），但股价收$662.30已突破机构认定的$650顶部！共振650C SM=B(62)备兑卖出行权价$650已被击穿$12.30。这意味着卖650C的机构正面临亏损，可能在明日被迫回补（gamma squeeze风险）。moomoo $41.3M偏空中，690C卖出($19.7M)在$662.30时仍OTM 4.2%=暂时安全，但602.5C卖出($13.2M)在$662.30时深度ITM $59.80=巨额浮亏。",
+    res: [
+      { name: "627.5C 4/17", amt: "$10.5M", tags: ["移仓", "多腿", "深度ITM"], analysis: "627.5C在$662.30时深度ITM $34.80。前期移仓/换手=在$642建仓时还合理，但$662.30的暴涨让这些仓位变成了深度盈利。moomoo标bearish sell可能是获利平仓。" },
+      { name: "650C 4/24", amt: "$11.7M", tags: ["备兑卖出", "SM=B(62)!", "已被突破"], analysis: "SM=B(62)全场最高的备兑卖出——但$650行权价已被$662.30突破$12.30！卖出方现在浮亏，面临到期前被迫回补的压力。这个'机构顶部判断'已被市场否定。" },
+      { name: "660C 4/17", amt: "$2.8M", tags: ["获利了结", "V/OI=2.40", "刚过ITM"], analysis: "660C在$662.30时刚过ITM $2.30。系统标获利平仓=前期建仓者在到期前锁定微利。精准判断：$660是今日实际阻力位。" },
+    ],
+    onlyM: [
+      { name: "690C 6/18", amt: "$19.7M", tags: ["bearish", "V/OI=2.61", "OTM 4.2%"], analysis: "卖出690C在$662.30时OTM $27.70(4.2%)=暂时安全。但如果META延续+4%/天的涨势，3天就能触及$690。这$19.7M premium面临被吃掉的风险。" },
+      { name: "602.5C 4/17", amt: "$13.2M", tags: ["bearish", "多腿", "巨亏ITM"], analysis: "卖出602.5C在$662.30时深度ITM $59.80=每手浮亏$5,980。如果是covered call则正股涨幅补偿，但裸空则巨亏。DTE=3天内必须处理。" },
+      { name: "675C 6/18", amt: "$7.9M", tags: ["bullish", "V/OI=9.00"], analysis: "买入675C在$662.30时OTM $12.70(1.9%)。V/OI=9.0极高新仓。这是偏空洪流中少见的看多信号——有人押注META突破$675。在$662.30收盘后，这个目标并不遥远。" },
+    ],
+    onlyS: [
+      { name: "625C 4/15", amt: "$6.1M", tags: ["偏空", "DTE=1", "深度ITM"], analysis: "明日到期625C在$662.30时深度ITM $37.30。卖出Call=巨额浮亏。如果是covered call则锁定了$625卖出价。" },
+      { name: "620C 4/17", amt: "$5.9M", tags: ["空头回补", "深度ITM"], analysis: "620C在$662.30时ITM $42.30。空头回补=空方止损。与650C被突破一致：META多层卖Call防线被逐个击穿。" },
+    ],
+    echo: "🔗 跨源呼应：$662.30收盘击穿了机构650C卖出防线——moomoo独有690C/602.5C bearish($33M)中，602.5C已深度亏损，690C暂时安全但缓冲仅4.2%。系统625C/620C空头被迫回补。META正在经历空方投降+卖Call防线崩溃——逆向信号？如果涨势持续，卖Call方被迫gamma回补可能推动更多上涨。",
+  },
+  {
+    t: "TSLA", icon: "⚪", price: "$364.60", conf: 4, cov: 50, mN: 10.6, sN: -40.1, agree: false, bc: C.muted,
+    cat: "TSLA收盘$364.60(+3.33%)；伊朗谈判'取得进展'→油价回落至$96→EV受益；但系统-$40.1M vs moomoo+$10.6M=严重分歧持续",
+    mot: "双源分歧依旧（moo+$10.6M vs sys-$40.1M）。$364.60收盘使得系统独有的获利了结合约全部更深ITM=获利盘更加丰厚。共振500P $66M是极端OTM对冲（$500 vs $364.60=OTM 37.1%），不改方向判断。系统141个独有合约以换手/获利了结为主——$364.60的强势收盘可能促使更多获利盘在明日涌出。",
+    res: [
+      { name: "500P 4/17", amt: "$66M", tags: ["极端OTM 37.1%", "IVR=100%!", "移仓"], analysis: "全市场最大单第二天出现。$500P在$364.60时OTM $135.40(+37.1%)，IVR=100%。系统标rollover。100%是机构组合策略对冲，不是方向押注。" },
+    ],
+    onlyM: [],
+    onlyS: [
+      { name: "365P 4/15", amt: "$25.6M", tags: ["换手", "SM=C(52)", "近ATM!"], analysis: "365P在$364.60时几乎ATM（偏$0.40 ITM）！明日到期的ATM Put换手$25.6M=极大仓位。SM=C(52)中性。如果TSLA明日跌破$365，这个Put变实值。关键期权。" },
+      { name: "345C 4/17", amt: "$16.9M", tags: ["获利了结", "深度ITM"], analysis: "345C在$364.60时深度ITM $19.60。获利平仓=锁定$19.60/股利润。前期$340建仓者大幅获利。" },
+      { name: "350C 4/15", amt: "$15.8M", tags: ["换手", "SM=B(55)", "ITM"], analysis: "350C在$364.60时ITM $14.60。SM=B(55)较高=有信息含量的换手。可能展期到更远日期。" },
+      { name: "370C 4/17", amt: "$15.4M", tags: ["获利了结", "OTM 1.5%"], analysis: "370C在$364.60时OTM $5.40(1.5%)。获利平仓=time value获利锁定。$370是短期阻力。" },
+      { name: "357.5C 4/17", amt: "$14.7M", tags: ["换手", "SM=B(62)!", "ITM"], analysis: "SM=B(62)全场最高分之一！357.5C在$364.60时ITM $7.10。高质量换手=仓位调整但不是离场，机构仍在博弈该区间。" },
+    ],
+    echo: "🔗 跨源呼应：系统365P 4/15 $25.6M近ATM（$364.60 vs $365=几乎精准平值）是明日最关键的pin risk合约。如果TSLA收在$365附近，gamma效应会极大。系统345C/370C获利了结($32M)+350C/357.5C换手($30M)=TSLA $345-370区间仓位重整，收盘$364.60居区间偏上。",
+  },
+  {
+    t: "ONDS", icon: "🟢", price: "$9.42", conf: 6, cov: 100, mN: 0.9, sN: 0.4, agree: true, bc: C.green,
+    cat: "ONDS收盘$9.42；完成World View收购+整合Palantir AIP；4M Defense赢以色列$50M排雷合同；FY26指引$375M(2x共识)；覆盖率100%",
+    mot: "覆盖率100%=moomoo报到的全部4个合约都被系统确认，全场最高信噪比。双源同向看多（+$1.3M合并）。金额小但在$9.42小盘股中信号罕见一致。收盘$9.42微跌不改中期看多逻辑——催化剂密集且全部是基本面驱动。",
+    res: [],
+    onlyM: [],
+    onlyS: [],
+    echo: "🔗 100%覆盖率+双源同向看多。收盘$9.42在$10 Call行权价下方=10C仍有0.58(6.2%)的OTM空间，premium相对便宜。",
+  },
+  {
+    t: "RKLB", icon: "⚪", price: "$72.46", conf: 4, cov: 100, mN: -0.6, sN: 2.6, agree: false, bc: C.muted,
+    cat: "RKLB收盘$72.46(+3.8%)；今日发布Gauss电推进卫星推进器(年产200+台)；Cantor维持Overweight/$85目标；iQPS多发射协议扩展至15次",
+    mot: "覆盖率100%但双源方向分歧（moo-$0.6M vs sys+$2.6M）。金额都很小且仅2个moomoo合约——分歧可能仅因样本过小无统计意义。$72.46收盘vs $85目标价=17.3%上行空间。Gauss发布+Neutron 2026末首飞+SpaceX IPO效应是中期催化。",
+    res: [],
+    onlyM: [],
+    onlyS: [],
+    echo: "🔗 样本过小（仅2个moomoo合约），分歧不具参考价值。$72.46收盘距分析师$85目标价有17.3%空间。关注Gauss订单转化。",
+  },
+];
+
+const strats = [
+  { tk: "NVDA", type: "Bull Call Spread", legs: "Buy 200C 5/15 + Sell 215C 5/15", entry: "~$5.20 debit", tgt: "$15 (NVDA→$215)", stop: "$2.30 (-56%)", risk: "$520/spread", per: "31天", conf: 8, why: "双源一致看多+$66M新仓看涨$200；收盘$196.45距$200仅1.8%；Nasdaq十连阳；短期目标$200-210" },
+  { tk: "GOOGL", type: "Bull Call Spread", legs: "Buy 335C 5/15 + Sell 350C 5/15", entry: "~$5.50 debit", tgt: "$15 (GOOGL→$350)", stop: "$2.50 (-55%)", risk: "$550/spread", per: "31天", conf: 7, why: "双源一致看多+$49M空头回补；$332.84突破$330阻力；上调行权价跟随股价上移" },
+  { tk: "GOOGL", type: "Short Put", legs: "Sell 320P 5/15", entry: "~$3.20 credit", tgt: "到期归零(GOOGL>$320)", stop: "GOOGL<$317", risk: "$31,680/合约", per: "31天", conf: 6, why: "空头回补确认$320为强支撑（从ITM跌到深度OTM）；$332.84收盘距$320有3.9%缓冲" },
+  { tk: "META", type: "观望/小仓看多", legs: "Buy 670C 5/15", entry: "~$18.50", tgt: "$35+ (META→$690)", stop: "$10 (-46%)", risk: "$1,850/合约", per: "31天", conf: 5, why: "$662.30击穿650C卖出防线→空头回补gamma squeeze可能；675C有$7.9M新建仓(V/OI=9.0)；但双源偏空-$45M需谨慎" },
+  { tk: "ONDS", type: "Long Call", legs: "Buy 10C 5/15", entry: "~$0.65", tgt: "$2+ (ONDS→$12)", stop: "$0.25", risk: "$65/合约", per: "31天", conf: 5, why: "100%覆盖率+双源看多；$9.42距$10仅6.2%；防务催化密集" },
+  { tk: "TSLA", type: "Iron Condor", legs: "Sell 350P/Buy 345P + Sell 380C/Buy 385C 4/17", entry: "~$1.80 credit", tgt: "TSLA 350-380区间到期", stop: "任一腿ITM", risk: "$320/spread", per: "3天", conf: 4, why: "双源分歧$50M+；$364.60居$345-370重整区间偏上；365P ATM pin risk=区间震荡概率高" },
+  { tk: "RKLB", type: "Long Call", legs: "Buy 75C 5/15", entry: "~$6.80", tgt: "$13+ (RKLB→$85)", stop: "$3.00", risk: "$680/合约", per: "31天", conf: 4, why: "Gauss发布+Neutron+SpaceX IPO；$72.46距$85目标17.3%；信号弱但催化好" },
+];
+
+function Dashboard() {
+  const [tab, setTab] = useState("NVDA");
+  const cur = tickers.find(t => t.t === tab);
+
+  return (
+    <div style={{ background: C.bg, color: C.text, fontFamily: "'Segoe UI',system-ui,sans-serif", minHeight: "100vh", padding: 14, maxWidth: 920, margin: "0 auto" }}>
+
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+          <B color={C.green}>LIVE</B>
+          <h1 style={{ margin: 0, fontSize: 19, fontWeight: 800 }}>双源期权异动深度分析</h1>
+          <span style={{ fontSize: 11, color: C.muted }}>2026-04-14 Tue</span>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 6, marginBottom: 8 }}>
+          {[
+            { l: "S&P 500", v: "6,967", c: "+1.18%", co: C.green },
+            { l: "Nasdaq", v: "23,639", c: "+1.96% 🔟连阳", co: C.green },
+            { l: "VIX", v: "18.24", c: "-4.6%", co: C.green },
+            { l: "WTI原油", v: "$96.31", c: "-2.8%", co: C.green },
+            { l: "PPI m/m", v: "+0.5%", c: "高于预期", co: C.orange },
+          ].map(d => (
+            <div key={d.l} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 5, padding: "6px 8px" }}>
+              <div style={{ fontSize: 9, color: C.muted }}>{d.l}</div>
+              <div style={{ fontSize: 15, fontWeight: 800 }}>{d.v}</div>
+              <div style={{ fontSize: 10, fontWeight: 600, color: d.co }}>{d.c}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: C.cardAlt, border: `1px solid ${C.border}`, borderRadius: 6, padding: "8px 12px", fontSize: 11, color: C.muted, lineHeight: 1.65 }}>
+          <span style={{ color: C.yellow, fontWeight: 700 }}>📡 宏观背景</span>
+          <br /><b style={{ color: C.text }}>市场：</b>Nasdaq <b style={{ color: C.green }}>十连阳</b>！SPX逼近7000。VIX 18.24（战争以来最低区间）。JD Vance称伊朗谈判"取得很大进展"→巴基斯坦安排第二轮会谈。油价$96(-2.8%)。
+          <br /><b style={{ color: C.text }}>财报季：</b>JPM beat但下调NII指引；WFC失望；JNJ上调收入指引；Citi十年最高季收。Goldman Solomon称dealmaking前景光明。
+          <br /><b style={{ color: C.text }}>数据：</b>PPI +0.5% m/m高于预期→批发通胀压力↑→但市场选择忽略继续risk-on。Citadel Griffin警告Hormuz关闭6-12月=全球衰退。
+          <br /><b style={{ color: C.text }}>催化：</b>RKLB发布Gauss电推进器；NVDA/MRVL合作持续；Meta Muse Spark催化余温($662.30新高)。
+        </div>
+        <div style={{ marginTop: 6, background: C.greenDim, border: `1px solid ${C.green}44`, borderRadius: 5, padding: "7px 10px", fontSize: 12, fontWeight: 700, color: C.green }}>
+          🎯 核心判断：Nasdaq十连阳+全线大涨(NVDA $196.45, GOOGL $332.84, META $662.30)=极端risk-on。NVDA/GOOGL双源看多且收盘已突破关键阻力。META虽然双源偏空但股价击穿了机构$650卖Call防线——空方可能被迫gamma回补。
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: 3, marginBottom: 8, flexWrap: "wrap" }}>
+        {tickers.map(t => (
+          <button key={t.t} onClick={() => setTab(t.t)} style={{
+            background: tab === t.t ? C.blue + "33" : "transparent",
+            border: `1px solid ${tab === t.t ? C.blue : C.border}`,
+            color: tab === t.t ? C.blue : C.muted,
+            padding: "4px 10px", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 700,
+          }}>{t.icon} {t.t}</button>
+        ))}
+      </div>
+
+      {cur && (
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, borderLeft: `3px solid ${cur.bc}`, padding: 14, marginBottom: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
+                <span style={{ fontSize: 20 }}>{cur.icon}</span>
+                <span style={{ fontSize: 20, fontWeight: 800, letterSpacing: 1 }}>{cur.t}</span>
+                <span style={{ fontSize: 11, color: C.muted }}>收盘 {cur.price}</span>
+                <B color={C.blue}>覆盖率 {cur.cov}%</B>
+              </div>
+              <Meter v={cur.conf} />
+            </div>
+            <Dir m={cur.mN} s={cur.sN} agree={cur.agree} />
+          </div>
+          <p style={{ margin: "0 0 5px", fontSize: 11, lineHeight: 1.5 }}>
+            <span style={{ color: C.purple, fontWeight: 700 }}>催化剂：</span><span style={{ color: C.muted }}>{cur.cat}</span>
+          </p>
+          <p style={{ margin: "0 0 8px", fontSize: 11, lineHeight: 1.5 }}>
+            <span style={{ color: C.blue, fontWeight: 700 }}>动机解读：</span><span style={{ color: C.muted }}>{cur.mot}</span>
+          </p>
+
+          {cur.res.length > 0 && <div style={{ marginBottom: 6 }}>
+            <div style={{ fontSize: 10, color: C.green, fontWeight: 700, marginBottom: 3 }}>◆ 共振合约（高置信）</div>
+            {cur.res.map((c, i) => <CC key={i} c={c} />)}
+          </div>}
+
+          {cur.onlyM && cur.onlyM.length > 0 && <div style={{ marginBottom: 6 }}>
+            <div style={{ fontSize: 10, color: C.orange, fontWeight: 700, marginBottom: 3 }}>◇ 仅moomoo（待验证）</div>
+            {cur.onlyM.map((c, i) => <CC key={i} c={c} />)}
+          </div>}
+
+          {cur.onlyS && cur.onlyS.length > 0 && <div style={{ marginBottom: 6 }}>
+            <div style={{ fontSize: 10, color: C.purple, fontWeight: 700, marginBottom: 3 }}>◇ 仅系统（中频信号）</div>
+            {cur.onlyS.map((c, i) => <CC key={i} c={c} />)}
+          </div>}
+
+          {cur.echo && <div style={{ padding: "7px 10px", background: cur.agree ? C.greenDim : C.yellowDim, borderRadius: 5, fontSize: 11, color: cur.agree ? C.green : C.yellow, lineHeight: 1.5 }}>
+            <b>{cur.echo.slice(0, 2)}</b>{cur.echo.slice(2)}
+          </div>}
+        </div>
+      )}
+
+      <div style={{ background: C.stratBg, border: `1px solid ${C.stratBorder}`, borderRadius: 8, padding: 14, marginBottom: 16 }}>
+        <h3 style={{ margin: "0 0 8px", fontSize: 14, color: C.yellow, fontWeight: 800 }}>📋 交易策略建议表</h3>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10 }}>
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${C.stratBorder}` }}>
+                {["标的", "策略", "具体腿", "入场", "目标", "止损", "最大风险", "周期", "置信", "理由"].map(h => (
+                  <th key={h} style={{ padding: "5px 4px", textAlign: "left", color: C.yellow, fontWeight: 700, fontSize: 9, whiteSpace: "nowrap" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {strats.map((s, i) => (
+                <tr key={i} style={{ background: i % 2 === 0 ? C.cardAlt : "transparent", borderBottom: `1px solid ${C.border}22` }}>
+                  <td style={{ padding: "6px 4px", fontWeight: 700, color: C.text }}>{s.tk}</td>
+                  <td style={{ padding: "6px 4px", color: C.blue, fontWeight: 600, whiteSpace: "nowrap" }}>{s.type}</td>
+                  <td style={{ padding: "6px 4px", color: C.text, fontFamily: "monospace", fontSize: 9 }}>{s.legs}</td>
+                  <td style={{ padding: "6px 4px", color: C.green, whiteSpace: "nowrap" }}>{s.entry}</td>
+                  <td style={{ padding: "6px 4px", color: C.green, whiteSpace: "nowrap" }}>{s.tgt}</td>
+                  <td style={{ padding: "6px 4px", color: C.red, whiteSpace: "nowrap" }}>{s.stop}</td>
+                  <td style={{ padding: "6px 4px", color: C.orange, whiteSpace: "nowrap" }}>{s.risk}</td>
+                  <td style={{ padding: "6px 4px", color: C.muted }}>{s.per}</td>
+                  <td style={{ padding: "6px 4px" }}><B color={s.conf >= 7 ? C.green : s.conf >= 5 ? C.yellow : C.muted}>{s.conf}/10</B></td>
+                  <td style={{ padding: "6px 4px", color: C.muted, maxWidth: 160, fontSize: 9 }}>{s.why}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: 14 }}>
+        <div style={{ background: C.yellowDim, borderRadius: 5, padding: "8px 12px", marginBottom: 10 }}>
+          <div style={{ fontSize: 13, fontWeight: 800, color: C.yellow }}>
+            今日宏观判断：Nasdaq十连阳全线暴涨，NVDA $196.45突破获利盘密集区直逼$200，GOOGL $332.84突破$330阻力，META $662.30击穿机构$650卖Call防线。市场忽略PPI过热、忽略Hormuz封锁——纯粹的risk-on极端行情。交易方向跟随双源共识(NVDA/GOOGL看多)，但必须用spread控制尾部风险。
+          </div>
+        </div>
+
+        <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.6, marginBottom: 10 }}>
+          <b style={{ color: C.purple }}>板块联动：</b>
+          AI基础设施(NVDA $196.45 双源看多$200+) → AI应用(META $662.30 机构卖Call防线崩溃→可能反转看多) → 通讯(GOOGL $332.84 空头投降) → 防务/航天(ONDS/RKLB 小盘独立催化)。主题：<b style={{ color: C.yellow }}>全线突破关键阻力=趋势加速，但十连阳超买风险累积</b>。
+        </div>
+
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 12, color: C.green, fontWeight: 700, marginBottom: 6 }}>🎯 Top 3 必跟策略</div>
+          {[
+            { n: 1, t: "NVDA", s: "Bull Spread 200/215C 5/15", c: "8/10", r: "$196.45距$200仅1.8%+双源一致看多$35M+$66M新仓→$200" },
+            { n: 2, t: "GOOGL", s: "Bull Spread 335/350C 5/15", c: "7/10", r: "$332.84突破$330+$49M空头投降；跟随行权价上移" },
+            { n: 3, t: "META", s: "观望或小仓Long 670C 5/15", c: "5/10", r: "$662.30击穿$650防线→空方gamma squeeze可能；但双源偏空需谨慎" },
+          ].map(x => (
+            <div key={x.n} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 8px", background: C.bg, borderRadius: 4, marginBottom: 3, border: `1px solid ${C.border}` }}>
+              <span style={{ fontSize: 14, fontWeight: 800, color: C.green, minWidth: 18 }}>#{x.n}</span>
+              <span style={{ fontWeight: 700, minWidth: 45 }}>{x.t}</span>
+              <span style={{ fontFamily: "monospace", color: C.yellow, fontSize: 10, minWidth: 200 }}>{x.s}</span>
+              <B color={parseInt(x.c) >= 7 ? C.green : C.yellow}>{x.c}</B>
+              <span style={{ color: C.muted, fontSize: 9, flex: 1 }}>{x.r}</span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ background: C.redDim, borderRadius: 5, padding: "8px 12px", fontSize: 10, color: C.red, lineHeight: 1.65 }}>
+          <b>⚠️ 风险提示</b>
+          <br />① <b>十连阳超买：</b>Nasdaq十连阳=2021年以来最长连涨。历史上连涨终结时回调幅度通常2-4%。任何伊朗恶化/ceasefire到期(下周二)都可能终结。
+          <br />② <b>PPI过热+通胀：</b>批发通胀+0.5%被忽略，但如果本周核心CPI超预期，Fed鹰派可能终结rally。
+          <br />③ <b>NVDA获利盘转移：</b>$190-195区间$66M+获利了结已完成，但$196.45新高位可能形成新获利盘。如果$200不能一次突破，$195-200区间将成为新的获利压力区。
+          <br />④ <b>META逆向风险：</b>双源-$45M偏空但股价暴涨+4.4%。$650卖Call防线被击穿可能触发gamma squeeze推更高——也可能是机构正确预判涨幅透支。设严格止损。
+          <br />⑤ <b>TSLA 365P pin risk：</b>$364.60收盘vs $365P明日到期=极端pin risk。明日可能在$365附近剧烈震荡。
+          <br />⑥ <b>仓位管理：</b>全部用spread封顶最大亏损。单腿敞口不超组合2%。ONDS/RKLB仅小仓位。
+        </div>
+
+        <div style={{ marginTop: 8, fontSize: 8, color: "#3a4a5a", textAlign: "center" }}>
+          数据源: Option Monster (IBKR/Lee-Ready) × moomoo (富途盘后异动) | IBKR收盘价: NVDA $196.45 | GOOGL $332.84 | META $662.30 | TSLA $364.60 | ONDS $9.42 | RKLB $72.46 | 2026-04-14 盘后 | 仅供研究参考，不构成投资建议
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Dashboard />);
+  </script>
 </body>
 </html>
