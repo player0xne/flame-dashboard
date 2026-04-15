@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>moomoo 异动期权分析仪表盘 (2026-04-14)</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0f1419;
+      color: #e8edf3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    button:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    function Dashboard() {
+      const [activeTab, setActiveTab] = useState(0);
+
+      // 严格遵循你要求的配色方案
+      const theme = {
+        bg: "#0f1419", card: "#1a2332", cardAlt: "#16202e", border: "#2a3a4e",
+        text: "#e8edf3", textMuted: "#8899aa",
+        green: "#00d26a", greenDim: "#0a3d2a", red: "#ff4757", redDim: "#3d1520",
+        yellow: "#ffc048", yellowDim: "#3d3015", orange: "#ff7b42",
+        blue: "#4da6ff", purple: "#a78bfa", stratBg: "#0d2137", stratBorder: "#1a4060",
+      };
+
+      const symbolsData = [
+        {
+          symbol: "NVDA", price: "$196.43", bias: "⚪中性/移仓", conf: 8, confColor: theme.green,
+          netLong: 110.6, netShort: 93.7,
+          motive: "180C 遭遇天量抛售，同时远端 200C 被巨资扫货，这是极其典型的向上移仓 (Roll-up) 操作。机构在现价附近锁定深度 ITM 利润，并转攻 $200 目标，维持强势但开始释放资金占用风险。",
+          catalyst: "NVIDIA 今日发布首个开源量子AI模型 Ising，进一步稳固前沿技术垄断预期。",
+          table: [
+            { strike: "180C", exp: "26-06-18", dte: 65, dir: "🔴看空", active: "卖出", voi: 0.46, amt: "$65.76M" },
+            { strike: "200C", exp: "26-05-29", dte: 45, dir: "🟢看多", active: "买入", voi: 36.33, amt: "$35.52M" },
+            { strike: "200C", exp: "26-06-18", dte: 65, dir: "🟢看多", active: "买入", voi: 0.34, amt: "$30.40M" },
+            { strike: "195P", exp: "28-12-15", dte: 976, dir: "🟢看多", active: "卖出", voi: 0.69, amt: "$23.08M" },
+            { strike: "200C", exp: "26-05-15", dte: 31, dir: "🟡混合", active: "混合", voi: 0.39, amt: "$10.37M" }
+          ]
+        },
+        {
+          symbol: "GLD", price: "$444.64", bias: "🔴强烈看跌/盖帽", conf: 9, confColor: theme.green,
+          netLong: 12.2, netShort: 53.8,
+          motive: "抛压极其沉重。机构利用近期黄金暴涨积累的高隐含波动率 (IV)，疯狂抛售 475C 与 500C 等深度虚值看涨期权，单笔 $36.4M 卖单直接焊死上方空间，狂吃时间价值 (Theta)。",
+          catalyst: "美伊停火谈判传出利好，原油跌破$97，地缘避险情绪急速降温导致贵金属失去溢价动力。",
+          table: [
+            { strike: "475C", exp: "26-05-15", dte: 31, dir: "🔴看空", active: "卖出", voi: 12.55, amt: "$36.40M" },
+            { strike: "500C", exp: "26-05-15", dte: 31, dir: "🔴看空", active: "卖出", voi: 6.41, amt: "$12.12M" },
+            { strike: "442C", exp: "26-04-24", dte: 10, dir: "🟡混合", active: "混合", voi: 14.40, amt: "$5.95M" },
+            { strike: "440C", exp: "26-04-24", dte: 10, dir: "🟡混合", active: "混合", voi: 16.36, amt: "$3.42M" }
+          ]
+        },
+        {
+          symbol: "META", price: "$662.29", bias: "🔴高位盖帽", conf: 8, confColor: theme.green,
+          netLong: 13.3, netShort: 54.6,
+          motive: "正股暴涨至 $662 的同时，资金毫无继续上攻的意愿。包括 690C, 627.5C, 650C 在内的多条 Call 腿被全部主动卖出压制。这是极其明确的“见好就收”和利用 Covered Call 锁定现货利润的动作。",
+          catalyst: "大盘强劲上涨带来 Beta 溢价，但个股缺乏独立新闻，机构逢高派发阻力极大。",
+          table: [
+            { strike: "690C", exp: "26-06-18", dte: 65, dir: "🔴看空", active: "卖出", voi: 2.61, amt: "$19.68M" },
+            { strike: "602.5C", exp: "26-04-17", dte: 3, dir: "🔴看空", active: "卖出", voi: 0.82, amt: "$13.19M" },
+            { strike: "675C", exp: "26-06-18", dte: 65, dir: "🟢看多", active: "买入", voi: 9.00, amt: "$7.92M" },
+            { strike: "627.5C", exp: "26-04-17", dte: 3, dir: "🔴看空", active: "卖出", voi: 0.79, amt: "$7.08M" }
+          ]
+        },
+        {
+          symbol: "TSLA", price: "$364.48", bias: "🟢温和看涨", conf: 7, confColor: theme.green,
+          netLong: 10.9, netShort: 0.3,
+          motive: "剔除高达 $66M 的 500P 疑似对冲换手大单后，真实情绪呈现显著的“买高 (395C/440C) 卖低 (300P)”的做多偏好，机构正在利用远期合约稳健构建底部看涨架构。",
+          catalyst: "无视英伟达自动驾驶领域的竞争新闻，正股今日强势逆转涨超3.6%，盘面多头承接力得到确认。",
+          table: [
+            { strike: "500P", exp: "26-04-17", dte: 3, dir: "🟡混合", active: "混合", voi: 1.53, amt: "$66.05M" },
+            { strike: "440C", exp: "26-08-21", dte: 129, dir: "🟢看多", active: "买入", voi: 0.87, amt: "$3.47M" },
+            { strike: "395C", exp: "26-05-15", dte: 31, dir: "🟢看多", active: "买入", voi: 1.83, amt: "$2.97M" },
+            { strike: "300P", exp: "26-09-18", dte: 157, dir: "🟢看多", active: "卖出", voi: 0.15, amt: "$2.35M" }
+          ]
+        },
+        {
+          symbol: "GOOGL", price: "$332.32", bias: "🟢强烈看涨", conf: 9, confColor: theme.green,
+          netLong: 18.3, netShort: 8.0,
+          motive: "单边看多资金倾泻！320C 与 330C 被快速主动买入抢筹，且未发现与之匹配的掩护性看跌资金，反映出主力单纯做多 Gamma 的攻击意图。",
+          catalyst: "整体科技主导的大盘反弹中，GOOGL 作为估值修复的核心标的受到机构青睐。",
+          table: [
+            { strike: "320C", exp: "26-04-17", dte: 3, dir: "🟢看多", active: "买入", voi: 1.13, amt: "$8.98M" },
+            { strike: "315C", exp: "26-05-15", dte: 31, dir: "🟡混合", active: "混合", voi: 0.23, amt: "$6.02M" },
+            { strike: "330C", exp: "26-04-17", dte: 3, dir: "🟢看多", active: "买入", voi: 0.96, amt: "$5.20M" },
+            { strike: "375C", exp: "26-05-15", dte: 31, dir: "🟢看多", active: "买入", voi: 6.85, amt: "$2.60M" }
+          ]
+        },
+        {
+          symbol: "MRVL", price: "$133.50", bias: "🟢支撑主导", conf: 7, confColor: theme.green,
+          netLong: 5.5, netShort: 1.6,
+          motive: "130P 遭到 V/OI 高达 18.3 的异常主动卖出，机构在现价下方用真金白银构建铁底。135C/140C 呈现小幅买盘配合，属于进可攻退可守的底部做多特征。",
+          catalyst: "半导体硬件情绪随 NVDA 回暖，超跌反弹动能显现。",
+          table: [
+            { strike: "130P", exp: "26-06-18", dte: 65, dir: "🟢看多", active: "卖出", voi: 18.30, amt: "$2.56M" },
+            { strike: "170C", exp: "26-07-17", dte: 94, dir: "🔴看空", active: "卖出", voi: 4.74, amt: "$1.04M" },
+            { strike: "92.5P", exp: "27-01-15", dte: 276, dir: "🟢看多", active: "卖出", voi: 0.76, amt: "$0.91M" },
+            { strike: "135C", exp: "26-04-17", dte: 3, dir: "🟢看多", active: "买入", voi: 1.31, amt: "$0.80M" }
+          ]
+        },
+        {
+          symbol: "PLTR", price: "$135.63", bias: "🟠短线防守", conf: 6, confColor: theme.yellow,
+          netLong: 5.3, netShort: 6.8,
+          motive: "看空略占上风，140P、137P、100P 均被主动买入防守，特别是末日 137P 出现高量买单，显示聪明钱认为当前 $135 附近的动能已经趋于枯竭，随时准备应对回撤。",
+          catalyst: "市场偏好转移至更优质的大盘科技，动能股流动性被抽血。",
+          table: [
+            { strike: "130P", exp: "27-01-15", dte: 276, dir: "🟢看多", active: "卖出", voi: 0.16, amt: "$2.05M" },
+            { strike: "140P", exp: "26-06-18", dte: 65, dir: "🔴看空", active: "买入", voi: 0.17, amt: "$1.75M" },
+            { strike: "137P", exp: "26-04-17", dte: 3, dir: "🔴看空", active: "买入", voi: 9.87, amt: "$0.87M" },
+            { strike: "136C", exp: "26-04-17", dte: 3, dir: "🟢看多", active: "买入", voi: 2.15, amt: "$0.84M" }
+          ]
+        },
+        {
+          symbol: "PL", price: "$33.77", bias: "⚪方向迷失", conf: 5, confColor: theme.textMuted,
+          netLong: 0.6, netShort: 0.7,
+          motive: "资金极小，多空净额近乎 1:1，未见单边大鳄身影，属于典型的区间对赌行情。",
+          catalyst: "缺乏核心宏观事件驱动。",
+          table: [
+            { strike: "17C", exp: "26-10-16", dte: 185, dir: "🟢看多", active: "买入", voi: 150.00, amt: "$0.32M" },
+            { strike: "20C", exp: "26-10-16", dte: 185, dir: "🔴看空", active: "卖出", voi: 6.52, amt: "$0.28M" }
+          ]
+        },
+        {
+          symbol: "ONDS", price: "$9.40", bias: "🟢投机挤空", conf: 6, confColor: theme.yellow,
+          netLong: 1.0, netShort: 0.1,
+          motive: "极端异常量！远期 11C 出现 26.6倍 的 V/OI 主动买入。这暗示有游资或内幕资金在低位布局长线 Gamma 炸弹。",
+          catalyst: "妖股/小盘股在 Risk-on 行情下的流动性外溢炒作。",
+          table: [
+            { strike: "11C", exp: "26-07-17", dte: 94, dir: "🟢看多", active: "买入", voi: 26.61, amt: "$0.42M" },
+            { strike: "10C", exp: "26-06-18", dte: 65, dir: "🟢看多", active: "买入", voi: 0.07, amt: "$0.41M" }
+          ]
+        },
+        {
+          symbol: "RKLB", price: "$72.70", bias: "🔴顺势回调", conf: 6, confColor: theme.yellow,
+          netLong: 0.2, netShort: 0.8,
+          motive: "主动买入 70P 进行下行防守，反映了对前期飙升涨幅的回调预期。",
+          catalyst: "航天板块估值过高引发的技术性抛售压力。",
+          table: [
+            { strike: "70P", exp: "26-05-15", dte: 31, dir: "🔴看空", active: "买入", voi: 0.16, amt: "$0.82M" },
+            { strike: "100C", exp: "26-05-15", dte: 31, dir: "🟢看多", active: "买入", voi: 0.51, amt: "$0.18M" }
+          ]
+        }
+      ];
+
+      const currentTab = symbolsData[activeTab];
+
+      return (
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "24px" }}>
+          
+          {/* Block A — 顶部宏观 */}
+          <div style={{ marginBottom: "24px" }}>
+            <h1 style={{ fontSize: "24px", fontWeight: "bold", margin: "0 0 16px 0", borderBottom: `2px solid ${theme.border}`, paddingBottom: "12px" }}>
+              moomoo 期权异动分析仪表盘 <span style={{ color: theme.textMuted, fontSize: "16px", fontWeight: "normal" }}>| 2026-04-14 盘后</span>
+            </h1>
+            
+            <div style={{ display: "flex", gap: "16px", marginBottom: "16px", flexWrap: "wrap" }}>
+              <div style={{ backgroundColor: theme.card, padding: "16px 24px", borderRadius: "8px", border: `1px solid ${theme.border}`, flex: "1 1 250px" }}>
+                <div style={{ color: theme.textMuted, fontSize: "13px", marginBottom: "6px" }}>S&P 500</div>
+                <div style={{ fontSize: "22px", fontWeight: "bold", color: theme.green }}>6,967.38 <span style={{ fontSize: "15px", marginLeft: "4px" }}>(+1.18%)</span></div>
+              </div>
+              <div style={{ backgroundColor: theme.card, padding: "16px 24px", borderRadius: "8px", border: `1px solid ${theme.border}`, flex: "1 1 250px" }}>
+                <div style={{ color: theme.textMuted, fontSize: "13px", marginBottom: "6px" }}>NASDAQ</div>
+                <div style={{ fontSize: "22px", fontWeight: "bold", color: theme.green }}>23,639.08 <span style={{ fontSize: "15px", marginLeft: "4px" }}>(+1.96%)</span></div>
+              </div>
+              <div style={{ backgroundColor: theme.card, padding: "16px 24px", borderRadius: "8px", border: `1px solid ${theme.border}`, flex: "1 1 250px" }}>
+                <div style={{ color: theme.textMuted, fontSize: "13px", marginBottom: "6px" }}>VIX (恐慌指数)</div>
+                <div style={{ fontSize: "22px", fontWeight: "bold", color: theme.green }}>18.36 <span style={{ fontSize: "15px", marginLeft: "4px" }}>(-3.97%)</span></div>
+              </div>
+            </div>
+
+            <div style={{ backgroundColor: theme.greenDim, borderLeft: `4px solid ${theme.green}`, padding: "16px", borderRadius: "0 8px 8px 0", lineHeight: "1.6" }}>
+              <strong>核心结论：</strong> 4月14日大盘呈现强劲的“Risk-on”行情，3月核心 PPI 温和叠加美伊停火乐观预期，油价暴跌。大盘飙升背景下期权流分化剧烈：机构趁势在 NVDA 上进行天量“低位获利了结+向上移仓”，并在 META、GLD 实施海量 Sell Call 封顶收租。资金正从“纯避险”向“精细化结构做多”切换。
+            </div>
+          </div>
+
+          {/* Block B — 标的卡片 (Tab) */}
+          <div style={{ marginBottom: "32px" }}>
+            <div style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "16px", marginBottom: "16px", borderBottom: `1px solid ${theme.border}` }}>
+              {symbolsData.map((s, idx) => (
+                <button 
+                  key={s.symbol}
+                  onClick={() => setActiveTab(idx)}
+                  style={{
+                    backgroundColor: activeTab === idx ? theme.card : "transparent",
+                    color: activeTab === idx ? theme.text : theme.textMuted,
+                    border: `1px solid ${activeTab === idx ? theme.border : "transparent"}`,
+                    padding: "10px 20px",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    fontWeight: activeTab === idx ? "bold" : "normal",
+                    transition: "all 0.2s ease",
+                    whiteSpace: "nowrap"
+                  }}
+                >
+                  {s.symbol}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ backgroundColor: theme.card, borderRadius: "10px", padding: "24px", border: `1px solid ${theme.border}`, display: "flex", flexDirection: "column", gap: "20px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  <div style={{ width: "6px", height: "48px", backgroundColor: currentTab.confColor, borderRadius: "3px" }}></div>
+                  <div>
+                    <h2 style={{ margin: "0 0 6px 0", fontSize: "26px", display: "flex", alignItems: "baseline", gap: "12px" }}>
+                      {currentTab.symbol} <span style={{ fontSize: "18px", color: theme.textMuted }}>{currentTab.price}</span>
+                    </h2>
+                    <div style={{ display: "flex", gap: "12px", fontSize: "15px" }}>
+                      <span style={{ color: currentTab.confColor, fontWeight: "bold" }}>{currentTab.bias}</span>
+                      <span style={{ color: theme.textMuted }}>| 置信度: {currentTab.conf}/10</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div style={{ width: "240px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", marginBottom: "6px" }}>
+                    <span style={{ color: theme.green, fontWeight: "bold" }}>看多: ${currentTab.netLong}M</span>
+                    <span style={{ color: theme.red, fontWeight: "bold" }}>看空: ${currentTab.netShort}M</span>
+                  </div>
+                  <div style={{ height: "10px", width: "100%", backgroundColor: theme.cardAlt, borderRadius: "5px", overflow: "hidden", display: "flex" }}>
+                    <div style={{ width: `${(currentTab.netLong / (currentTab.netLong + currentTab.netShort)) * 100}%`, backgroundColor: theme.green }}></div>
+                    <div style={{ width: `${(currentTab.netShort / (currentTab.netLong + currentTab.netShort)) * 100}%`, backgroundColor: theme.red }}></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <div>
+                  <span style={{ backgroundColor: "rgba(77, 166, 255, 0.15)", color: theme.blue, padding: "4px 8px", borderRadius: "4px", fontSize: "13px", fontWeight: "bold", marginRight: "10px", display: "inline-block", marginBottom: "4px" }}>动机解读</span>
+                  <span style={{ fontSize: "15px", lineHeight: "1.6" }}>{currentTab.motive}</span>
+                </div>
+                <div>
+                  <span style={{ backgroundColor: "rgba(167, 139, 250, 0.15)", color: theme.purple, padding: "4px 8px", borderRadius: "4px", fontSize: "13px", fontWeight: "bold", marginRight: "10px", display: "inline-block", marginBottom: "4px" }}>催化剂关联</span>
+                  <span style={{ fontSize: "15px", lineHeight: "1.6" }}>{currentTab.catalyst}</span>
+                </div>
+              </div>
+
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px", minWidth: "600px" }}>
+                  <thead>
+                    <tr style={{ borderBottom: `2px solid ${theme.border}`, color: theme.textMuted, textAlign: "left" }}>
+                      <th style={{ padding: "12px 8px" }}>行权价</th>
+                      <th style={{ padding: "12px 8px" }}>到期日 (DTE)</th>
+                      <th style={{ padding: "12px 8px" }}>方向</th>
+                      <th style={{ padding: "12px 8px" }}>主动类型</th>
+                      <th style={{ padding: "12px 8px" }}>V/OI</th>
+                      <th style={{ padding: "12px 8px", textAlign: "right" }}>成交金额</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentTab.table.map((row, i) => (
+                      <tr key={i} style={{ borderBottom: i !== currentTab.table.length -1 ? `1px solid ${theme.cardAlt}` : "none" }}>
+                        <td style={{ padding: "12px 8px", fontWeight: "bold" }}>{row.strike}</td>
+                        <td style={{ padding: "12px 8px" }}>{row.exp} <span style={{ color: theme.textMuted }}>({row.dte})</span></td>
+                        <td style={{ padding: "12px 8px", color: row.dir.includes("涨") || row.dir.includes("多") ? theme.green : row.dir.includes("跌") || row.dir.includes("空") ? theme.red : theme.yellow }}>{row.dir}</td>
+                        <td style={{ padding: "12px 8px" }}>{row.active}</td>
+                        <td style={{ padding: "12px 8px", color: row.voi > 5 ? theme.orange : theme.text }}>{row.voi}</td>
+                        <td style={{ padding: "12px 8px", textAlign: "right", fontFamily: "monospace" }}>{row.amt}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Block C — 交易策略建议表 */}
+          <div style={{ marginBottom: "32px", backgroundColor: theme.stratBg, borderRadius: "10px", border: `1px solid ${theme.stratBorder}`, overflow: "hidden" }}>
+            <h2 style={{ margin: "0", padding: "16px 20px", backgroundColor: theme.stratBorder, color: theme.yellow, fontSize: "18px", display: "flex", alignItems: "center", gap: "8px" }}>
+              ⚡ 华尔街对冲级实战策略谱 (Actionable Strategies)
+            </h2>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px", minWidth: "1000px" }}>
+                <thead>
+                  <tr style={{ color: theme.textMuted, borderBottom: `2px solid ${theme.stratBorder}`, textAlign: "left" }}>
+                    <th style={{ padding: "14px 16px" }}>标的</th>
+                    <th style={{ padding: "14px 16px" }}>策略类型</th>
+                    <th style={{ padding: "14px 16px" }}>具体腿 (Legs)</th>
+                    <th style={{ padding: "14px 16px" }}>入场/止损</th>
+                    <th style={{ padding: "14px 16px" }}>盈亏/风险</th>
+                    <th style={{ padding: "14px 16px" }}>周期</th>
+                    <th style={{ padding: "14px 16px" }}>置信</th>
+                    <th style={{ padding: "14px 16px" }}>执行理由</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style={{ backgroundColor: "transparent" }}>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold", color: theme.blue }}>NVDA</td>
+                    <td style={{ padding: "14px 16px" }}><span style={{ color: theme.green, border: `1px solid ${theme.green}`, padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>垂直看涨价差</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>买入 06-18 200C<br/>卖出 06-18 210C</td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>目标价: $210<br/><span style={{ color: theme.red }}>破 $185 止损</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>风险: 净权利金<br/>收益: $10距锁定</td>
+                    <td style={{ padding: "14px 16px" }}>60天</td>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold", color: theme.green }}>8/10</td>
+                    <td style={{ padding: "14px 16px", color: theme.textMuted, fontSize: "13px", lineHeight: "1.5" }}>顺应机构向上移仓动能，降低买单纯权风险</td>
+                  </tr>
+                  <tr style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold", color: theme.yellow }}>GLD</td>
+                    <td style={{ padding: "14px 16px" }}><span style={{ color: theme.red, border: `1px solid ${theme.red}`, padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>熊市看涨信用差</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>卖出 05-15 475C<br/>买入 05-15 480C</td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>目标: &lt;$475收全<br/><span style={{ color: theme.red }}>破 $465 认损</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>风险: $5距-期权费<br/>收益: 高胜率收租</td>
+                    <td style={{ padding: "14px 16px" }}>30天</td>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold", color: theme.green }}>9/10</td>
+                    <td style={{ padding: "14px 16px", color: theme.textMuted, fontSize: "13px", lineHeight: "1.5" }}>复刻鲸鱼 $36M 的天量盖帽，吸干恐慌回落的 IV</td>
+                  </tr>
+                  <tr style={{ backgroundColor: "transparent" }}>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold" }}>TSLA</td>
+                    <td style={{ padding: "14px 16px" }}><span style={{ color: theme.green, border: `1px solid ${theme.green}`, padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>卖出看跌底仓</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>卖出 05-08 325P</td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>开仓赚取权利金<br/><span style={{ color: theme.red }}>破 $315 接盘</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>风险: 持仓本金<br/>收益: 全额 Theta</td>
+                    <td style={{ padding: "14px 16px" }}>24天</td>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold", color: theme.green }}>7/10</td>
+                    <td style={{ padding: "14px 16px", color: theme.textMuted, fontSize: "13px", lineHeight: "1.5" }}>支撑强劲，300P被主动抛售，虚值建底安全边际极高</td>
+                  </tr>
+                  <tr style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold", color: theme.blue }}>META</td>
+                    <td style={{ padding: "14px 16px" }}><span style={{ color: theme.red, border: `1px solid ${theme.red}`, padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>熊市看涨信用差</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>卖出 06-18 690C<br/>买入 06-18 700C</td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>震荡压制在 $690<br/><span style={{ color: theme.red }}>破 $675 止损</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>风险: $10距锁定<br/>收益: 高位阻力收租</td>
+                    <td style={{ padding: "14px 16px" }}>65天</td>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold", color: theme.green }}>8/10</td>
+                    <td style={{ padding: "14px 16px", color: theme.textMuted, fontSize: "13px", lineHeight: "1.5" }}>吃定上方沉重的机构 Sell Call 阻力层，赚取时间耗损</td>
+                  </tr>
+                  <tr style={{ backgroundColor: "transparent" }}>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold" }}>GOOGL</td>
+                    <td style={{ padding: "14px 16px" }}><span style={{ color: theme.green, border: `1px solid ${theme.green}`, padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>垂直看涨价差</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>买入 04-17 330C<br/>卖出 04-17 340C</td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>目标价: $340<br/><span style={{ color: theme.red }}>破 $325 离场</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>风险: 极低净权利金<br/>收益: $10行权差</td>
+                    <td style={{ padding: "14px 16px" }}>3天</td>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold", color: theme.green }}>8/10</td>
+                    <td style={{ padding: "14px 16px", color: theme.textMuted, fontSize: "13px", lineHeight: "1.5" }}>跟进短线单边买入情绪，享受末日 Gamma 爆发红利</td>
+                  </tr>
+                  <tr style={{ backgroundColor: "rgba(255,255,255,0.02)" }}>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold" }}>MRVL</td>
+                    <td style={{ padding: "14px 16px" }}><span style={{ color: theme.green, border: `1px solid ${theme.green}`, padding: "2px 6px", borderRadius: "4px", fontSize: "12px" }}>卖出看跌底仓</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>卖出 06-18 130P</td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>赚取全额权利金<br/><span style={{ color: theme.red }}>破 $125 准备接股</span></td>
+                    <td style={{ padding: "14px 16px", lineHeight: "1.5" }}>风险: 占用接盘资金<br/>收益: 胜率奇高</td>
+                    <td style={{ padding: "14px 16px" }}>65天</td>
+                    <td style={{ padding: "14px 16px", fontWeight: "bold", color: theme.green }}>8/10</td>
+                    <td style={{ padding: "14px 16px", color: theme.textMuted, fontSize: "13px", lineHeight: "1.5" }}>V/OI 超 18 倍的罕见极端卖出，表明130附近托盘铁血</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Block D — 底部总结 */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ backgroundColor: theme.cardAlt, border: `1px solid ${theme.border}`, borderRadius: "8px", padding: "20px" }}>
+                <h3 style={{ margin: "0 0 12px 0", color: theme.yellow, fontSize: "17px" }}>宏观定调</h3>
+                <p style={{ margin: "0", fontSize: "15px", lineHeight: "1.6" }}>
+                  <strong style={{ color: theme.yellow }}>今日宏观判断：【避险退潮，大盘重返区间，半导体内部高低切与筹码锁定】</strong>
+                </p>
+              </div>
+
+              <div style={{ backgroundColor: "rgba(167, 139, 250, 0.1)", border: `1px solid ${theme.purple}`, borderRadius: "8px", padding: "20px" }}>
+                <h3 style={{ margin: "0 0 12px 0", color: theme.purple, fontSize: "17px" }}>板块联动与风向识别</h3>
+                <p style={{ margin: "0", fontSize: "14px", lineHeight: "1.7", color: theme.text }}>
+                  <strong>科技内部剧烈分化：</strong> 资金结束了无脑闭眼买入所有巨头的阶段。GOOGL 获得了纯正现货替代型追涨买单；NVDA 进入稳健的盈利移仓锁定区；而 META 在狂欢中被机构暴力“封顶”套现。黄金(GLD)的多头大本营正在瓦解出逃。
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ backgroundColor: theme.cardAlt, border: `1px solid ${theme.border}`, borderRadius: "8px", padding: "20px" }}>
+                <h3 style={{ margin: "0 0 12px 0", color: theme.blue, fontSize: "17px" }}>📌 明日 Top 3 必跟强推策略</h3>
+                <ol style={{ margin: "0", paddingLeft: "20px", fontSize: "14px", lineHeight: "1.8", color: theme.text }}>
+                  <li><strong>GLD 熊市看涨信用差 (卖出 475C)</strong> — 胜率极高，踩实机构套现撤退。</li>
+                  <li><strong>NVDA 垂直看涨价差 (200C/210C)</strong> — 跟随主力上攻斜率博弈。</li>
+                  <li><strong>MRVL 卖出看跌底仓 (卖出 130P)</strong> — 支撑铁底清晰，胜率极高。</li>
+                </ol>
+              </div>
+
+              <div style={{ backgroundColor: theme.redDim, border: `1px solid ${theme.red}`, borderRadius: "8px", padding: "20px" }}>
+                <h3 style={{ margin: "0 0 12px 0", color: theme.red, fontSize: "17px" }}>⚠️ 极端风险提示 (Fatal Risks)</h3>
+                <ul style={{ margin: "0", paddingLeft: "20px", fontSize: "13px", lineHeight: "1.7", color: theme.text }}>
+                  <li><strong style={{ color: theme.red }}>黑天鹅预警：</strong> 中东地缘局势如若突变，GLD 将暴力反拉，卖 Call (475C) 务必设置硬止损。</li>
+                  <li><strong style={{ color: theme.red }}>数据局限：</strong> 巨额 ITM 成交极可能包含保证金仓位调仓或复杂期权合并腿，并非单一裸做。</li>
+                  <li><strong style={{ color: theme.red }}>止损纪律：</strong> 期权买方仓位禁止超过总资金的 5%。</li>
+                </ul>
+              </div>
+            </div>
+            
+          </div>
+          
+          <div style={{ textAlign: "center", marginTop: "40px", marginBottom: "20px", fontSize: "12px", color: theme.textMuted }}>
+            Disclaimer: 异动期权数据推演不构成直接投资建议。期权交易含有高杠杆风险，可能导致本金全损。<br/>
+            Data Source: moomoo Options Tracker | Real-time Context Integration.
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<Dashboard />);
+  </script>
+</body>
+</html>

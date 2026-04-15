@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import Link from "next/link";
 import { getAnalysisContent } from "@/lib/data";
 import { AnalysisType, getAnalysisLabel, formatDateDisplay } from "@/lib/dates";
@@ -12,6 +14,14 @@ const TYPE_COLORS: Record<AnalysisType, string> = {
 };
 
 export const dynamic = "force-dynamic";
+
+function getGeminiContent(date: string, type: AnalysisType): string | undefined {
+  const file = path.join(process.cwd(), "public", "data", date, `${type}-gemini.html`);
+  if (fs.existsSync(file)) {
+    return fs.readFileSync(file, "utf-8");
+  }
+  return undefined;
+}
 
 export default async function AnalysisPage({
   params,
@@ -31,6 +41,9 @@ export default async function AnalysisPage({
     notFound();
   }
 
+  const geminiContent = getGeminiContent(date, analysisType);
+  const hasGemini = Boolean(geminiContent);
+
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
@@ -48,14 +61,36 @@ export default async function AnalysisPage({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-card-border bg-card-bg p-1">
-        <iframe
-          srcDoc={content}
-          className="w-full rounded-xl bg-white"
-          style={{ minHeight: "80vh", border: "none" }}
-          sandbox="allow-scripts allow-same-origin"
-          title={`${getAnalysisLabel(analysisType)} - ${date}`}
-        />
+      <div className={hasGemini ? "grid gap-4 grid-cols-1 lg:grid-cols-2" : ""}>
+        <div className="rounded-2xl border border-card-border bg-card-bg p-1">
+          {hasGemini && (
+            <div className="px-3 py-1.5 text-xs font-semibold text-accent">
+              Claude
+            </div>
+          )}
+          <iframe
+            srcDoc={content}
+            className="w-full rounded-xl bg-white"
+            style={{ minHeight: "80vh", border: "none" }}
+            sandbox="allow-scripts allow-same-origin"
+            title={`${getAnalysisLabel(analysisType)} - ${date} - Claude`}
+          />
+        </div>
+
+        {hasGemini && (
+          <div className="rounded-2xl border border-card-border bg-card-bg p-1">
+            <div className="px-3 py-1.5 text-xs font-semibold text-accent-2">
+              Gemini
+            </div>
+            <iframe
+              srcDoc={geminiContent}
+              className="w-full rounded-xl bg-white"
+              style={{ minHeight: "80vh", border: "none" }}
+              sandbox="allow-scripts allow-same-origin"
+              title={`${getAnalysisLabel(analysisType)} - ${date} - Gemini`}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
